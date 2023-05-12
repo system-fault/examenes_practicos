@@ -1,0 +1,3 @@
+".\Objects\examen.obj" 
+TO ".\Objects\examanes_SED" 
+PRINT(".\Listings\examanes_SED.m51") RAMSIZE(256) 

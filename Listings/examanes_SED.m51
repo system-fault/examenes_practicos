@@ -1,0 +1,48 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/12/2023  21:47:26  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\examen.obj TO .\Objects\examanes_SED PRINT (.\Listings\examanes_SED.m51) RAMSIZE (
+>> 256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\examen.obj (EXAMEN)
+
+
+LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\examanes_SED (EXAMEN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        EXAMEN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  -------         ENDMOD        EXAMEN
+
+*** WARNING L10: CANNOT DETERMINE ROOT SEGMENT
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0000H BYTE ( 0%) *
+******************************************************************************
+
+Program Size: data=0.0 xdata=0 code=0
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

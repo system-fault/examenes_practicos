@@ -1,0 +1,25 @@
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/12/2023 21:47:26 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
+OBJECT MODULE PLACED IN .\Objects\examen.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE examen.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\ex
+                    -amen.lst) TABS(2) OBJECT(.\Objects\examen.obj)
+
+line level    source
+
+   1          #include <reg552.h>
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
