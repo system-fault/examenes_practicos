@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/13/2023  00:18:27  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/13/2023  00:31:22  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -59,7 +59,7 @@ SEGMENT
 
 ?C_C51STARTUP
   +--> ?PR?MAIN?EXAMEN
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:18:27  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:31:22  PAGE 2
 
 
 
@@ -119,19 +119,19 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         DO            
   D:0006H         SYMBOL        resultadoConversion
   -------         ENDDO         
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:18:27  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:31:22  PAGE 3
 
 
   C:0B77H         LINE#         55
   C:0B77H         LINE#         56
-  C:0B77H         LINE#         62
-  C:0B7AH         LINE#         65
-  C:0B7DH         LINE#         68
-  C:0B80H         LINE#         72
-  C:0B86H         LINE#         76
-  C:0B89H         LINE#         80
-  C:0B9EH         LINE#         82
-  C:0B9EH         LINE#         83
+  C:0B77H         LINE#         64
+  C:0B7AH         LINE#         67
+  C:0B7DH         LINE#         70
+  C:0B80H         LINE#         74
+  C:0B86H         LINE#         78
+  C:0B89H         LINE#         82
+  C:0B9EH         LINE#         84
+  C:0B9EH         LINE#         85
   -------         ENDPROC       _CONVERSIONAD
   -------         PROC          INTERRUPCIONTR0
   -------         DO            
@@ -142,24 +142,24 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   D:000EH         SYMBOL        error
   D:0018H         SYMBOL        contador
   -------         ENDDO         
-  C:0ACBH         LINE#         85
-  C:0AD8H         LINE#         93
-  C:0ADBH         LINE#         94
-  C:0ADEH         LINE#         96
-  C:0AE0H         LINE#         100
-  C:0AE9H         LINE#         101
-  C:0AF2H         LINE#         103
-  C:0B16H         LINE#         104
-  C:0B3AH         LINE#         107
-  C:0B45H         LINE#         110
-  C:0B4BH         LINE#         111
-  C:0B56H         LINE#         112
-  C:0B59H         LINE#         113
-  C:0B66H         LINE#         114
-  C:0B69H         LINE#         115
-  C:0B69H         LINE#         116
-  C:0B6CH         LINE#         117
-  C:0B6CH         LINE#         118
+  C:0ACBH         LINE#         87
+  C:0AD8H         LINE#         95
+  C:0ADBH         LINE#         96
+  C:0ADEH         LINE#         98
+  C:0AE0H         LINE#         102
+  C:0AE9H         LINE#         103
+  C:0AF2H         LINE#         105
+  C:0B16H         LINE#         106
+  C:0B3AH         LINE#         109
+  C:0B45H         LINE#         112
+  C:0B4BH         LINE#         113
+  C:0B56H         LINE#         114
+  C:0B59H         LINE#         115
+  C:0B66H         LINE#         116
+  C:0B69H         LINE#         117
+  C:0B69H         LINE#         118
+  C:0B6CH         LINE#         119
+  C:0B6CH         LINE#         120
   -------         ENDPROC       INTERRUPCIONTR0
   -------         ENDMOD        EXAMEN
 
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         ENDMOD        ?C?FCAST
 
   -------         MODULE        ?C?CASTF
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:18:27  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:31:22  PAGE 4
 
 
   C:0A3CH         PUBLIC        ?C?CASTF

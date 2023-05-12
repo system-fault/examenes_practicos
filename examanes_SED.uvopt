@@ -144,8 +144,8 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>116</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
+          <LineNumber>118</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
           <Address>-16774295</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
@@ -155,7 +155,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>EXAMEN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\EXAMEN\118</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
