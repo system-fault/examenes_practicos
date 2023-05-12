@@ -21,7 +21,9 @@
   "outDir": "build",
   "deviceName": null,
   "packDir": null,
-  "miscInfo": {},
+  "miscInfo": {
+    "uid": "22b6d272840bade4f914491ac0374301"
+  },
   "targets": {
     "Target 1": {
       "excludeList": [],
@@ -38,11 +40,11 @@
       "uploadConfigMap": {},
       "custom_dep": {
         "name": "default",
-        "sourceDirList": [],
-        "libList": [],
         "incList": [
           "../../../../Keil_v5/C51/INC/Philips"
         ],
+        "libList": [],
+        "sourceDirList": [],
         "defineList": []
       }
     }
