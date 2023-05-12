@@ -13,7 +13,7 @@ unsigned char TL_carga, TH_carga;
 
 sbit marcha = 0xC0;
 
-void main(main)
+void main(void)
 {
     inicialicizar();
 
@@ -31,8 +31,8 @@ void inicialicizar(void)
     // Variables locales
     unsigned int vi_inicial;
 
-    // Configuramos el TR en modo 01 16bit modo timer
-    TCON = 0x01;
+    // Configuramos el TR en modo 01 16bit modo timer T MODO TMOD!!!!
+    TMOD = 0x01;
 
     // Calculo del valor inicial de TR0
     vi_inicial = (0xFFFF - 1) - BASE_DE_TIEMPO * FREQ_OSCI / 12.0;
@@ -54,9 +54,11 @@ void inicialicizar(void)
 
 unsigned int conversionAD(unsigned char canal)
 {
+    /*OJO!!!! AL SIMULAR LOS VOLTAJES TIENEN QUE SER REALES, LOS PUERTOS ACEPTAN ENTRE 0 Y 5 VOLTIOS
+    SI SE SIMULA SE SIMULAN VOLTAJES ENTRE 0-5 SI SUBES DE 5 VOLTIOS DESBORDAS Y NO FUNCIONA*/
 
     // Variable local para devolver el valor
-    unsigned char resultadoConversion;
+    unsigned int resultadoConversion; // Mismo tipo de dato que la funcion unsigned int!!!!
 
     // Ponemos ADCON al 0
     ADCON = ADCON & 0x00;
@@ -69,7 +71,7 @@ unsigned int conversionAD(unsigned char canal)
 
     // Esperamos a que la conversion este completada
 
-    while (ADCON & 0x10 == 0)
+    while ((ADCON & (0x10)) == 0)
         ;
 
     // Ponemos ADCI a 0
@@ -86,8 +88,9 @@ void interrupcionTR0(void) interrupt 1 using 1
 {
 
     // Variables locales
-    unsigned int referenciaTemperatura, temperatura, codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura, error;
-    unsigned char contador;
+    static unsigned int referenciaTemperatura, temperatura, codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura;
+    int error;
+    static unsigned char contador;
     // Carga de nuevo valores iniciales TR0
     TL0 = TL_carga;
     TH0 = TH_carga;
@@ -106,7 +109,7 @@ void interrupcionTR0(void) interrupt 1 using 1
     error = referenciaTemperatura - temperatura;
 
     // Segun el signo de error seleccionamos una se;al de salida en P3 y ponemos a cero el contador para volver a contar 10 segundos
-    if (contador = 200) {
+    if (contador == 200) {
         if (error > 0) {
             P3 = 0xFF;
         } else if (error <= 0) {
