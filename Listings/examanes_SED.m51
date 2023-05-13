@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/12/2023  21:47:26  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/13/2023  19:33:11  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -11,6 +11,7 @@ MEMORY MODEL: SMALL
 
 INPUT MODULES INCLUDED:
   .\Objects\examen.obj (EXAMEN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
 
 
 LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
@@ -18,6 +19,23 @@ LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
 
             TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
             -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            REG     0008H     0008H     ABSOLUTE     "REG BANK 1"
+            DATA    0010H     0004H     UNIT         ?DT?EXAMEN
+            IDATA   0014H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+                    000EH     07F2H                  *** GAP ***
+            CODE    0800H     006DH     UNIT         ?PR?INTERRUPCIONTR0?EXAMEN
+            CODE    086DH     002AH     UNIT         ?PR?INICIALIZAR?EXAMEN
+            CODE    0897H     0012H     UNIT         ?CO?EXAMEN
+            CODE    08A9H     000CH     UNIT         ?C_C51STARTUP
+            CODE    08B5H     0008H     UNIT         ?PR?MAIN?EXAMEN
 
 
 
@@ -27,22 +45,116 @@ OVERLAY MAP OF MODULE:   .\Objects\examanes_SED (EXAMEN)
 SEGMENT
   +--> CALLED SEGMENT
 ---------------------
+?PR?INTERRUPCIONTR0?EXAMEN
+  +--> ?CO?EXAMEN
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP
+  +--> ?PR?MAIN?EXAMEN
+
+?PR?MAIN?EXAMEN
+  +--> ?PR?INICIALIZAR?EXAMEN
+
 
 
 SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  19:33:11  PAGE 2
+
+
 
   VALUE           TYPE          NAME
   ----------------------------------
 
   -------         MODULE        EXAMEN
   C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  C:0800H         PUBLIC        interrupcionTR0
+  B:00A8H.7       PUBLIC        EA
+  C:086DH         PUBLIC        inicializar
+  C:08B5H         PUBLIC        main
+  D:0011H         PUBLIC        TH_0
+  D:0012H         PUBLIC        TL_0
+  B:00C0H.2       PUBLIC        velocidad
+  D:0089H         PUBLIC        TMOD
+  B:00A8H.1       PUBLIC        ET0
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  D:0013H         PUBLIC        indice
+  B:00C0H.0       PUBLIC        marcha
+  B:00C0H.1       PUBLIC        sentido
+  -------         PROC          MAIN
+  C:08B5H         LINE#         18
+  C:08B5H         LINE#         19
+  C:08B5H         LINE#         21
+  C:08B8H         LINE#         22
+  C:08B8H         LINE#         27
+  -------         ENDPROC       MAIN
+  -------         PROC          INICIALIZAR
+  -------         DO            
+  D:0006H         SYMBOL        valor_inicial_TR0
+  -------         ENDDO         
+  C:086DH         LINE#         33
+  C:086DH         LINE#         34
+  C:086DH         LINE#         39
+  C:0870H         LINE#         41
+  C:0874H         LINE#         43
+  C:0876H         LINE#         44
+  C:0878H         LINE#         45
+  C:087BH         LINE#         46
+  C:087EH         LINE#         49
+  C:0880H         LINE#         50
+  C:0882H         LINE#         53
+  C:0885H         LINE#         54
+  C:0888H         LINE#         55
+  C:088BH         LINE#         56
+  C:088BH         LINE#         57
+  C:088EH         LINE#         58
+  C:0891H         LINE#         59
+  C:0894H         LINE#         60
+  C:0894H         LINE#         63
+  C:0896H         LINE#         64
+  -------         ENDPROC       INICIALIZAR
+  -------         PROC          INTERRUPCIONTR0
+  -------         DO            
+  C:0897H         SYMBOL        codigo
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  19:33:11  PAGE 3
+
+
+  D:0010H         SYMBOL        contador
+  D:000FH         SYMBOL        desbordamientos
+  -------         ENDDO         
+  C:0800H         LINE#         66
+  C:080BH         LINE#         99
+  C:080EH         LINE#         100
+  C:0811H         LINE#         104
+  C:0814H         LINE#         105
+  C:0816H         LINE#         106
+  C:0824H         LINE#         108
+  C:0824H         LINE#         110
+  C:0827H         LINE#         111
+  C:0829H         LINE#         112
+  C:0829H         LINE#         114
+  C:082BH         LINE#         118
+  C:0833H         LINE#         121
+  C:083BH         LINE#         123
+  C:083DH         LINE#         125
+  C:0840H         LINE#         127
+  C:0848H         LINE#         128
+  C:0848H         LINE#         131
+  C:0850H         LINE#         134
+  C:0858H         LINE#         136
+  C:085AH         LINE#         138
+  C:085DH         LINE#         140
+  C:0864H         LINE#         141
+  C:0864H         LINE#         142
+  -------         ENDPROC       INTERRUPCIONTR0
   -------         ENDMOD        EXAMEN
 
-*** WARNING L10: CANNOT DETERMINE ROOT SEGMENT
-
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0000H BYTE ( 0%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 00B4H BYTE ( 8%) *
 ******************************************************************************
 
-Program Size: data=0.0 xdata=0 code=0
-LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)
+Program Size: data=21.0 xdata=0 code=195
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
