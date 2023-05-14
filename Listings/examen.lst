@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/13/2023 00:31:22 PAGE 1   
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/14/2023 03:56:54 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
@@ -10,138 +10,224 @@ line level    source
 
    1          #include <reg552.h>
    2          
-   3          #define BASE_DE_TIEMPO 50000
-   4          #define FREQ_OSCI      11.0592
-   5          
-   6          // Declaracion de funciones
-   7          
-   8          void inicialicizar(void);
-   9          unsigned int conversionAD(unsigned char canal);
-  10          
-  11          // Variables globales
-  12          unsigned char TL_carga, TH_carga;
-  13          
-  14          sbit marcha = 0xC0;
-  15          
-  16          void main(void)
-  17          {
-  18   1          inicialicizar();
-  19   1      
-  20   1          while (1) {
-  21   2              while (marcha == 0)
-  22   2                  ;
-  23   2          }
-  24   1      }
+   3          #define BASE_TIEMPO 250
+   4          #define FREQ_OSC    11.0592
+   5          #define DESB_x_SEG  4000
+   6          
+   7          // Declaracion de funciones
+   8          void inicializar(void);
+   9          unsigned int conversionAD(unsigned char);
+  10          void controlPanel(void);
+  11          
+  12          // Variables globales
+  13          char verdeIn, ambarIn, rojoIn;
+  14          unsigned int contador;
+  15          unsigned long int contador10seg;
+  16          unsigned char TL_1, TH_1;
+  17          int temperatura;
+  18          unsigned int resultadoConversion;
+  19          
+  20          // Salidas
+  21          sbit verde = 0x90;
+  22          sbit ambar = 0x91;
+  23          sbit rojo  = 0x92;
+  24          sbit panel = 0x97;
   25          
-  26          // Definicion de funciones
-  27          
-  28          void inicialicizar(void)
-  29          {
-  30   1      
-  31   1          // Variables locales
-  32   1          unsigned int vi_inicial;
-  33   1      
-  34   1          // Configuramos el TR en modo 01 16bit modo timer T MODO TMOD!!!!
-  35   1          TMOD = 0x01;
-  36   1      
-  37   1          // Calculo del valor inicial de TR0
-  38   1          vi_inicial = (0xFFFF - 1) - BASE_DE_TIEMPO * FREQ_OSCI / 12.0;
-  39   1      
-  40   1          // Carga en TL0 y TH0
-  41   1          TL0 = TL_carga = vi_inicial;
-  42   1          TH0 = TH_carga = vi_inicial >> 8;
-  43   1      
-  44   1          // Habilitacion interrupciones
-  45   1          EA  = 1;
-  46   1          ET0 = 1;
-  47   1      
-  48   1          // Ponemos P3.2;P3.3;P3.4;P3.5 a 0 para evitar problemas
-  49   1          P3 = 0xC3;
-  50   1      
-  51   1          // Arrancamos el TR0
-  52   1          TR0 = 1;
-  53   1      }
-  54          
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/13/2023 00:31:22 PAGE 2   
+  26          // Entradas
+  27          sbit botoPeaton = 0xC0;
+  28          // sbit diparoIntEx1 = 0xB3;
+  29          
+  30          void main(void)
+  31          {
+  32   1          // Inicializa el semaforo
+  33   1          inicializar();
+  34   1      
+  35   1          while (1) {
+  36   2              // SECUENCIA VERDE
+  37   2              while (verdeIn == 1) {
+  38   3                  // Encendemos el verde
+  39   3                  verde = 1;
+  40   3                  // Esperamos a que se levante TF1
+  41   3                  while (TF1 == 0)
+  42   3                      ;
+  43   3                  // Bajamos TF1
+  44   3                  TF1 = 0;
+  45   3                  // incrementamos el contador
+  46   3                  contador++;
+  47   3                  // Aumentamos el contador del panel
+  48   3                  contador10seg++;
+  49   3                  
+  50   3                  
+  51   3                  //Controlamos el panel en este punto porque es el timepo mas largo de la secuencia
+  52   3                  controlPanel();
+  53   3      
+  54   3                  // Comprueba si se ha pulsado el boton peaton
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/14/2023 03:56:54 PAGE 2   
 
-  55          unsigned int conversionAD(unsigned char canal)
-  56          {
-  57   1          /*OJO!!!! AL SIMULAR LOS VOLTAJES TIENEN QUE SER REALES, LOS PUERTOS ACEPTAN ENTRE 0 Y 5 VOLTIOS
-  58   1          SI SE SIMULA SE SIMULAN VOLTAJES ENTRE 0-5 SI SUBES DE 5 VOLTIOS DESBORDAS Y NO FUNCIONA*/
-  59   1      
-  60   1          // Variable local para devolver el valor
-  61   1          unsigned int resultadoConversion; // Mismo tipo de dato que la funcion unsigned int!!!!
-  62   1      
-  63   1          // Ponemos ADCON al 0
-  64   1          ADCON = ADCON & 0x00;
-  65   1      
-  66   1          // Configuramos ADCON
-  67   1          ADCON = ADCON | canal;
-  68   1      
-  69   1          // Iniciamos la conversion
-  70   1          ADCON = ADCON | 0x8;
-  71   1      
-  72   1          // Esperamos a que la conversion este completada
-  73   1      
-  74   1          while ((ADCON & (0x10)) == 0)
-  75   1              ;
-  76   1      
-  77   1          // Ponemos ADCI a 0
-  78   1          ADCON = ADCON & 0xEF;
-  79   1      
-  80   1          // Guardamos en resultadoConversion
-  81   1      
-  82   1          resultadoConversion = (ADCON >> 6) | ADCH << 2;
-  83   1      
-  84   1          return (resultadoConversion);
-  85   1      }
-  86          
-  87          void interrupcionTR0(void) interrupt 1 using 1
-  88          {
-  89   1      
-  90   1          // Variables locales
-  91   1          static unsigned int referenciaTemperatura, temperatura, codigoDigitalReferenciaTemperatura, codigoDigi
-             -talTemperatura;
-  92   1          int error;
-  93   1          static unsigned char contador;
-  94   1          // Carga de nuevo valores iniciales TR0
-  95   1          TL0 = TL_carga;
-  96   1          TH0 = TH_carga;
-  97   1      
-  98   1          contador++;
-  99   1      
- 100   1          // Obtenenmos los valores de la referencia de temperatura y la temperatura
- 101   1      
- 102   1          codigoDigitalReferenciaTemperatura = conversionAD(0);
- 103   1          codigoDigitalTemperatura           = conversionAD(1);
- 104   1      
- 105   1          referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
- 106   1          temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
- 107   1      
- 108   1          // Obtenemos el error
- 109   1          error = referenciaTemperatura - temperatura;
- 110   1      
- 111   1          // Segun el signo de error seleccionamos una se;al de salida en P3 y ponemos a cero el contador para v
-             -olver a contar 10 segundos
- 112   1          if (contador == 200) {
- 113   2              if (error > 0) {
- 114   3                  P3 = 0xFF;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/13/2023 00:31:22 PAGE 3   
+  55   3                  if (botoPeaton == 1) {
+  56   4                      // Cargamos valores para saltar a ambar
+  57   4                      contador = 0;
+  58   4                      verdeIn  = 0;
+  59   4                      ambarIn  = 1;
+  60   4                      verde    = 0;
+  61   4                  }
+  62   3                  // Comprueba si han pasado 10 segundos/ 1seg 4000
+  63   3                  if (contador == 40000) {
+  64   4                      contador = 0;
+  65   4                      verdeIn  = 0;
+  66   4                      ambarIn  = 1;
+  67   4                      verde    = 0;
+  68   4                  }
+  69   3              }
+  70   2          
+  71   2      
+  72   2              controlPanel();
+  73   2      
+  74   2              // SECUENCIA AMBAR
+  75   2              while (ambarIn == 1) {
+  76   3      
+  77   3                  // Encendemos el ambar
+  78   3                  ambar = 1;
+  79   3                  // Esperamos a que se levante TF1
+  80   3                  while (TF1 == 0)
+  81   3                      ;
+  82   3                  // Bajamos TF1
+  83   3                  TF1 = 0;
+  84   3                  // incrementamos el contador
+  85   3                  contador++;
+  86   3                  // Aumentamos el contador del panel
+  87   3                  contador10seg++;
+  88   3      
+  89   3                  // Comprueba si han pasado 2 segundos/ 1seg 4000
+  90   3                  if (contador == 8000) {
+  91   4                      contador = 0;
+  92   4                      ambarIn  = 0;
+  93   4                      rojoIn   = 1;
+  94   4                      ambar    = 0;
+  95   4                  }
+  96   3              }
+  97   2      
+  98   2              controlPanel();
+  99   2      
+ 100   2              // SECUANCIA ROJO
+ 101   2              while (rojoIn == 1) {
+ 102   3      
+ 103   3                  // Encendemos el ambar
+ 104   3                  rojo = 1;
+ 105   3                  // Esperamos a que se levante TF1
+ 106   3                  while (TF1 == 0)
+ 107   3                      ;
+ 108   3                  // Bajamos TF1
+ 109   3                  TF1 = 0;
+ 110   3                  // incrementamos el contador
+ 111   3                  contador++;
+ 112   3                  // Aumentamos el contador del panel
+ 113   3                  contador10seg++;
+ 114   3      
+ 115   3                  // Compruba si el boton se ha pulsado el boton peaton
+ 116   3                  if (botoPeaton == 1) {
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/14/2023 03:56:54 PAGE 3   
 
- 115   3              } else if (error <= 0) {
- 116   3                  P3 = 0xC3;
- 117   3              }
- 118   2              contador = 0;
- 119   2          }
- 120   1      }
+ 117   4                      contador = 0; // anade 7seg
+ 118   4                  }
+ 119   3                  // Comprueba si han pasado 7 segundos/ 1seg 4000
+ 120   3                  if (contador == 28000) {
+ 121   4                      contador = 0;
+ 122   4                      rojoIn   = 0;
+ 123   4                      verdeIn  = 1;
+ 124   4                      rojo     = 0;
+ 125   4                  }
+ 126   3              }
+ 127   2      
+ 128   2              controlPanel();
+ 129   2          }
+ 130   1      }
+ 131          
+ 132          // Definicion de funciones
+ 133          
+ 134          void inicializar(void)
+ 135          {
+ 136   1          // Variables locales
+ 137   1          unsigned char vi_carga;
+ 138   1          // Configuracion del timer 1 modo 2 (10) temporizador 8 bits con auto recarga
+ 139   1          TMOD = 0x20;
+ 140   1          // Calculo de carga inicial del timer 1
+ 141   1          vi_carga = (0xFF - 1) - BASE_TIEMPO * FREQ_OSC / 12.0;
+ 142   1          TL_1     = vi_carga;
+ 143   1          TH_1     = vi_carga;
+ 144   1          // Una vez disparado el timer no hace falta volver a recargarlo
+ 145   1          TL1 = TL_1;
+ 146   1          TH1 = TH_1;
+ 147   1          // Ponemos las salidas a 0
+ 148   1          verde = 0;
+ 149   1          ambar = 0;
+ 150   1          rojo  = 0;
+ 151   1      
+ 152   1          // Iniciamos el TR1
+ 153   1          TR1 = 1;
+ 154   1      
+ 155   1          // Seleccionamos verde como primer color
+ 156   1          verdeIn = 1;
+ 157   1      
+ 158   1          // Pnemos a cero el contador
+ 159   1          contador = 0;
+ 160   1      
+ 161   1          // Apagamos el panel
+ 162   1          panel = 0;
+ 163   1      }
+ 164          
+ 165          unsigned int conversionAD(unsigned char canal)
+ 166          {
+ 167   1      
+ 168   1          // variables locales
+ 169   1          unsigned int resultado;
+ 170   1      
+ 171   1          // Configuramos ADCON
+ 172   1          ADCON = ADCON & 0x00; // Boramos ADCON
+ 173   1          ADCON = canal;        // Asignamos el canal
+ 174   1      
+ 175   1          // Iniciamos la conversion AD
+ 176   1          ADCON = ADCON | 0x08;
+ 177   1      
+ 178   1          // Esperamos a que la conversion este hecha
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/14/2023 03:56:54 PAGE 4   
+
+ 179   1          while ((ADCON & 0x10) == 0)
+ 180   1              ;
+ 181   1          // Ponemos ADCI a cero
+ 182   1          ADCON = ADCON & 0xEF;
+ 183   1      
+ 184   1          // Guardamos en la variable el resultado
+ 185   1          resultado = (ADCON >> 6) | ADCH << 2;
+ 186   1      
+ 187   1          return (resultado);
+ 188   1      }
+ 189          
+ 190          void controlPanel(void)
+ 191          {
+ 192   1      
+ 193   1          // Comprobamos si han pasado 10 segundos
+ 194   1          if (contador10seg >= 40000) {
+ 195   2              contador10seg       = 0;
+ 196   2              resultadoConversion = conversionAD(3);
+ 197   2              temperatura         = ((70.0 / 1023) * resultadoConversion - 20.0);
+ 198   2              // Modifica el panel
+ 199   2              if (temperatura < 15) {
+ 200   3                  panel = 1;
+ 201   3              }
+ 202   2              if (temperatura >= 15) {
+ 203   3                  panel = 0;
+ 204   3              }
+ 205   2          }
+ 206   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    251    ----
+   CODE SIZE        =    449    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     11    ----
+   DATA SIZE        =     15    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
