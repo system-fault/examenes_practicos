@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/13/2023  00:31:22  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/14/2023  23:13:24  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -6,18 +6,13 @@ C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\examen.obj TO .\Objects\examanes_SED PRINT
 >> 256)
 
 
-MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
+MEMORY MODEL: SMALL
 
 
 INPUT MODULES INCLUDED:
   .\Objects\examen.obj (EXAMEN)
-  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
-  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
-  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
-  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
-  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ULCMP)
 
 
 LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
@@ -28,21 +23,21 @@ LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            REG     0008H     0008H     ABSOLUTE     "REG BANK 1"
-            DATA    0010H     000BH     UNIT         ?DT?EXAMEN
-            IDATA   001BH     0001H     UNIT         ?STACK
+            DATA    0008H     0008H     UNIT         ?DT?EXAMEN
+                    0010H     0008H                  *** GAP ***
+            REG     0018H     0008H     ABSOLUTE     "REG BANK 3"
+            IDATA   0020H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
                     0003H     0008H                  *** GAP ***
             CODE    000BH     0003H     ABSOLUTE     
                     000EH     07F2H                  *** GAP ***
-            CODE    0800H     02CBH     UNIT         ?C?LIB_CODE
-            CODE    0ACBH     00ACH     UNIT         ?PR?INTERRUPCIONTR0?EXAMEN
-            CODE    0B77H     0028H     UNIT         ?PR?_CONVERSIONAD?EXAMEN
-            CODE    0B9FH     001FH     UNIT         ?PR?INICIALICIZAR?EXAMEN
-            CODE    0BBEH     000CH     UNIT         ?C_C51STARTUP
-            CODE    0BCAH     0008H     UNIT         ?PR?MAIN?EXAMEN
+            CODE    0800H     00DEH     UNIT         ?PR?INTERRUPCIONTR0?EXAMEN
+            CODE    08DEH     0027H     UNIT         ?PR?MAIN?EXAMEN
+            CODE    0905H     0021H     UNIT         ?PR?INICIALIZAR?EXAMEN
+            CODE    0926H     0011H     UNIT         ?C?LIB_CODE
+            CODE    0937H     000CH     UNIT         ?C_C51STARTUP
 
 
 
@@ -52,19 +47,11 @@ OVERLAY MAP OF MODULE:   .\Objects\examanes_SED (EXAMEN)
 SEGMENT
   +--> CALLED SEGMENT
 ---------------------
-?PR?INTERRUPCIONTR0?EXAMEN
-  +--> ?PR?_CONVERSIONAD?EXAMEN
-
-*** NEW ROOT ***************************************************
-
 ?C_C51STARTUP
   +--> ?PR?MAIN?EXAMEN
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:31:22  PAGE 2
-
-
 
 ?PR?MAIN?EXAMEN
-  +--> ?PR?INICIALICIZAR?EXAMEN
+  +--> ?PR?INICIALIZAR?EXAMEN
 
 
 
@@ -72,126 +59,120 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
 
   VALUE           TYPE          NAME
   ----------------------------------
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2023  23:13:24  PAGE 2
+
+
 
   -------         MODULE        EXAMEN
   C:0000H         SYMBOL        _ICE_DUMMY_
-  D:0019H         PUBLIC        TL_carga
-  C:0ACBH         PUBLIC        interrupcionTR0
-  D:00B0H         PUBLIC        P3
+  C:0800H         PUBLIC        interrupcionTR0
   B:00A8H.7       PUBLIC        EA
-  D:00C6H         PUBLIC        ADCH
-  C:0BCAH         PUBLIC        main
+  C:0905H         PUBLIC        inicializar
+  D:0008H         PUBLIC        DISPARADO
+  D:0009H         PUBLIC        SEGURIDAD
+  C:08DEH         PUBLIC        main
+  D:000AH         PUBLIC        TH_0
+  B:00C0H.0       PUBLIC        cohete1
+  B:00C0H.1       PUBLIC        cohete2
+  B:00C0H.2       PUBLIC        cohete3
+  D:000BH         PUBLIC        TL_0
   D:0089H         PUBLIC        TMOD
+  B:00C0H.7       PUBLIC        guillotina
   B:00A8H.1       PUBLIC        ET0
   D:008CH         PUBLIC        TH0
   D:008AH         PUBLIC        TL0
-  C:0B77H         PUBLIC        _conversionAD
+  B:0090H.7       PUBLIC        EMERGENCIA
   B:0088H.4       PUBLIC        TR0
-  C:0B9FH         PUBLIC        inicialicizar
-  D:00C5H         PUBLIC        ADCON
-  B:00C0H.0       PUBLIC        marcha
-  D:001AH         PUBLIC        TH_carga
+  D:000CH         PUBLIC        contador
+  B:0090H.0       PUBLIC        disparo
   -------         PROC          MAIN
-  C:0BCAH         LINE#         16
-  C:0BCAH         LINE#         17
-  C:0BCAH         LINE#         18
-  C:0BCDH         LINE#         20
-  C:0BCDH         LINE#         21
+  C:08DEH         LINE#         28
+  C:08DEH         LINE#         29
+  C:08DEH         LINE#         32
+  C:08E1H         LINE#         34
+  C:08E1H         LINE#         36
+  C:08EBH         LINE#         38
+  C:08EDH         LINE#         39
+  C:08EFH         LINE#         40
+  C:08F1H         LINE#         41
+  C:08F3H         LINE#         43
+  C:08FBH         LINE#         44
+  C:08FDH         LINE#         45
+  C:0900H         LINE#         46
+  C:0903H         LINE#         47
+  C:0903H         LINE#         48
   -------         ENDPROC       MAIN
-  -------         PROC          INICIALICIZAR
+  -------         PROC          INICIALIZAR
   -------         DO            
-  D:0006H         SYMBOL        vi_inicial
+  D:0007H         SYMBOL        valor_carga_inical
   -------         ENDDO         
-  C:0B9FH         LINE#         28
-  C:0B9FH         LINE#         29
-  C:0B9FH         LINE#         35
-  C:0BA2H         LINE#         38
-  C:0BA6H         LINE#         41
-  C:0BADH         LINE#         42
-  C:0BB4H         LINE#         45
-  C:0BB6H         LINE#         46
-  C:0BB8H         LINE#         49
-  C:0BBBH         LINE#         52
-  C:0BBDH         LINE#         53
-  -------         ENDPROC       INICIALICIZAR
-  -------         PROC          _CONVERSIONAD
-  D:0007H         SYMBOL        canal
-  -------         DO            
-  D:0006H         SYMBOL        resultadoConversion
-  -------         ENDDO         
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:31:22  PAGE 3
+  C:0905H         LINE#         55
+  C:0905H         LINE#         56
+  C:0905H         LINE#         62
+  C:0908H         LINE#         65
+  C:090AH         LINE#         66
+  C:090CH         LINE#         67
+  C:090EH         LINE#         68
+  C:0911H         LINE#         69
+  C:0914H         LINE#         72
+  C:0916H         LINE#         73
+  C:0918H         LINE#         76
+  C:091AH         LINE#         77
+  C:091CH         LINE#         78
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2023  23:13:24  PAGE 3
 
 
-  C:0B77H         LINE#         55
-  C:0B77H         LINE#         56
-  C:0B77H         LINE#         64
-  C:0B7AH         LINE#         67
-  C:0B7DH         LINE#         70
-  C:0B80H         LINE#         74
-  C:0B86H         LINE#         78
-  C:0B89H         LINE#         82
-  C:0B9EH         LINE#         84
-  C:0B9EH         LINE#         85
-  -------         ENDPROC       _CONVERSIONAD
+  C:091EH         LINE#         79
+  C:0920H         LINE#         82
+  C:0923H         LINE#         85
+  C:0925H         LINE#         86
+  -------         ENDPROC       INICIALIZAR
   -------         PROC          INTERRUPCIONTR0
-  -------         DO            
-  D:0010H         SYMBOL        referenciaTemperatura
-  D:0012H         SYMBOL        temperatura
-  D:0014H         SYMBOL        codigoDigitalReferenciaTemperatura
-  D:0016H         SYMBOL        codigoDigitalTemperatura
-  D:000EH         SYMBOL        error
-  D:0018H         SYMBOL        contador
-  -------         ENDDO         
-  C:0ACBH         LINE#         87
-  C:0AD8H         LINE#         95
-  C:0ADBH         LINE#         96
-  C:0ADEH         LINE#         98
-  C:0AE0H         LINE#         102
-  C:0AE9H         LINE#         103
-  C:0AF2H         LINE#         105
-  C:0B16H         LINE#         106
-  C:0B3AH         LINE#         109
-  C:0B45H         LINE#         112
-  C:0B4BH         LINE#         113
-  C:0B56H         LINE#         114
-  C:0B59H         LINE#         115
-  C:0B66H         LINE#         116
-  C:0B69H         LINE#         117
-  C:0B69H         LINE#         118
-  C:0B6CH         LINE#         119
-  C:0B6CH         LINE#         120
+  C:0800H         LINE#         91
+  C:080DH         LINE#         97
+  C:0813H         LINE#         98
+  C:0828H         LINE#         99
+  C:0828H         LINE#         101
+  C:084CH         LINE#         103
+  C:084EH         LINE#         104
+  C:0851H         LINE#         105
+  C:0851H         LINE#         107
+  C:0869H         LINE#         108
+  C:086BH         LINE#         109
+  C:086EH         LINE#         110
+  C:086EH         LINE#         112
+  C:0885H         LINE#         113
+  C:0887H         LINE#         114
+  C:088AH         LINE#         115
+  C:088AH         LINE#         117
+  C:08A2H         LINE#         118
+  C:08A4H         LINE#         119
+  C:08A6H         LINE#         120
+  C:08A8H         LINE#         121
+  C:08AAH         LINE#         122
+  C:08B2H         LINE#         123
+  C:08B2H         LINE#         125
+  C:08B5H         LINE#         128
+  C:08B7H         LINE#         131
+  C:08B9H         LINE#         132
+  C:08BBH         LINE#         133
+  C:08BDH         LINE#         135
+  C:08C0H         LINE#         137
+  C:08C3H         LINE#         138
+  C:08CFH         LINE#         139
+  C:08D1H         LINE#         140
+  C:08D3H         LINE#         141
+  C:08D3H         LINE#         142
   -------         ENDPROC       INTERRUPCIONTR0
   -------         ENDMOD        EXAMEN
 
-  -------         MODULE        ?C?FPADD
-  C:0807H         PUBLIC        ?C?FPADD
-  C:0803H         PUBLIC        ?C?FPSUB
-  -------         ENDMOD        ?C?FPADD
-
-  -------         MODULE        ?C?FPMUL
-  C:08F8H         PUBLIC        ?C?FPMUL
-  -------         ENDMOD        ?C?FPMUL
-
-  -------         MODULE        ?C?FCAST
-  C:0A08H         PUBLIC        ?C?FCASTC
-  C:0A03H         PUBLIC        ?C?FCASTI
-  C:09FEH         PUBLIC        ?C?FCASTL
-  -------         ENDMOD        ?C?FCAST
-
-  -------         MODULE        ?C?CASTF
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  00:31:22  PAGE 4
-
-
-  C:0A3CH         PUBLIC        ?C?CASTF
-  -------         ENDMOD        ?C?CASTF
-
-  -------         MODULE        ?C?LNEG
-  C:0ABDH         PUBLIC        ?C?LNEG
-  -------         ENDMOD        ?C?LNEG
+  -------         MODULE        ?C?ULCMP
+  C:0926H         PUBLIC        ?C?ULCMP
+  -------         ENDMOD        ?C?ULCMP
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 00FEH BYTE (12%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0129H BYTE (14%) *
 ******************************************************************************
 
-Program Size: data=28.0 xdata=0 code=984
+Program Size: data=25.0 xdata=0 code=329
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
