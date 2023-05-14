@@ -14,7 +14,7 @@ char verdeIn, ambarIn, rojoIn;
 unsigned int contador;
 unsigned long int contador10seg;
 unsigned char TL_1, TH_1;
-int temperatura;
+int temperatura; // La temperatura tomara valores negativos
 unsigned int resultadoConversion;
 
 // Salidas
@@ -25,7 +25,6 @@ sbit panel = 0x97;
 
 // Entradas
 sbit botoPeaton = 0xC0;
-// sbit diparoIntEx1 = 0xB3;
 
 void main(void)
 {
@@ -46,9 +45,9 @@ void main(void)
             contador++;
             // Aumentamos el contador del panel
             contador10seg++;
-						
-            
-            //Controlamos el panel en este punto porque es el timepo mas largo de la secuencia
+
+            // Controlamos el panel en este punto porque es el timepo mas largo de la secuencia,
+            //  es aqui donde podemos tener solapamientos de timepo
             controlPanel();
 
             // Comprueba si se ha pulsado el boton peaton
@@ -67,7 +66,6 @@ void main(void)
                 verde    = 0;
             }
         }
-    
 
         controlPanel();
 
