@@ -88,8 +88,9 @@ void interrupcionTR0(void) interrupt 1 using 1
 {
 
     // Variables locales
-    static unsigned int referenciaTemperatura, temperatura, codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura;
-    int error;
+    float referenciaTemperatura, temperatura;
+    unsigned int codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura;
+    float error;
     static unsigned char contador;
     // Carga de nuevo valores iniciales TR0
     TL0 = TL_carga;
