@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 10:31:39 PAGE 1   
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 20:23:54 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
@@ -31,139 +31,153 @@ line level    source
   21   1          inicializar();
   22   1          while (1) {
   23   2      
-  24   2              /*PROBLEMA CON ESTE WHILE SI LO DEJAS SIN CODIGO DENTRO SALTA LA INTERRUPCION SIEMPRE,
-  25   2              AL NO TENER CODIGO SUPONGO QUE ENTRE QUE SALE DEL WHILE Y VUELVE A COMPROBAR ENTRA LA INTERRUCION
-  26   2              Y EJECUATA EL CODIGO
-  27   2              LA EXPLICACION ES QUE SI TIENE CODIGO EJECUTA EL CODIGO Y DESDE DENTRO DEL WHILE COMPRUEBA LA COND
-             -ICION
-  28   2              SI EL WHILE ESTA VACIO SALE Y VUELVE A VALORAR LA EXPRESION, EN ESO MOMENTO SALTA LA INTERRUPCION*
-             -/
-  29   2            while (marcha == 0); { P1 = 0xFF; }
-  30   2          }
-  31   1      }
-  32          
-  33          // Definicion de funciones
-  34          
-  35          void inicializar(void)
-  36          {
-  37   1          // Variables locales
-  38   1          unsigned int valor_inicial_TR0;
-  39   1      
-  40   1          // Configuramos TMOD para el TR0 modo 16bits
-  41   1          TMOD = 0x01;
-  42   1          // Calculamos la carga inicial de temporizador
-  43   1          valor_inicial_TR0 = (0xFFFF - 1) - BASE_TIEMPO * FREQ_OSCI / 12.0;
-  44   1          // Carga de los valores en TR0
-  45   1          TL_0 = valor_inicial_TR0;
-  46   1          TH_0 = valor_inicial_TR0 >> 8;
-  47   1          TL0  = TL_0;
-  48   1          TH0  = TH_0;
-  49   1      
-  50   1          // Configuracion interrupciones
-  51   1          EA  = 1; // Interrupciones globales activadas
-  52   1          ET0 = 1; // Interrupcion TR0 activada
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 10:31:39 PAGE 2   
+  24   2              /*ESTE PROGRAMA DIO PROBLEMAS, NUNCA PARABA, LA INTERRUPCION SE EJECUTABA SIEMPRE Y NUNCA PARABA D
+             -E EJECUTARSE EL CODIGO*/
+  25   2              /*SOLUCION MAS LOGICA!!!!!! PARA EL TR EN EL WHILE Y SE ACTIVA CUANDO MARCHA ON, SE SOLUCINA EL PR
+             -OBLEMA, SI EL TR ESTA
+  26   2              ENCENDIDO ES IMPOSIBLE EVITAR QUE LA INTERRUPCION SALTE, POR ESO ES UNA INTERRUPCION*/
+  27   2              while (marcha == 0) {
+  28   3                  // Apagamos el letrero TR0 y dejamos cargado para cuando marcha ON
+  29   3                  P1  = 0x00;
+  30   3                  TR0 = 0;
+  31   3                  TL0 = TL_0;
+  32   3                  TH0 = TH_0;
+  33   3              }
+  34   2              if ((marcha == 1) && (TR0 == 0)) // Si el temporizador esta encendido nos saltamos esta instruccio
+             -n
+  35   2              {
+  36   3                  TR0 = 1;
+  37   3              }
+  38   2          }
+  39   1      }
+  40          
+  41          // Definicion de funciones
+  42          
+  43          void inicializar(void)
+  44          {
+  45   1          // Variables locales
+  46   1          unsigned int valor_inicial_TR0;
+  47   1      
+  48   1          // Configuramos TMOD para el TR0 modo 16bits
+  49   1          TMOD = 0x01;
+  50   1          // Calculamos la carga inicial de temporizador
+  51   1          valor_inicial_TR0 = (0xFFFF + 1) - BASE_TIEMPO * FREQ_OSCI / 12.0;
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 20:23:54 PAGE 2   
 
-  53   1      
-  54   1          // Encendemos la primera secuencia segun sea el valor de sentido y fijamos en que posicion del indice 
+  52   1          // Carga de los valores en TR0
+  53   1          TL_0 = valor_inicial_TR0;
+  54   1          TH_0 = valor_inicial_TR0 >> 8;
+  55   1          TL0  = TL_0;
+  56   1          TH0  = TH_0;
+  57   1      
+  58   1          // Configuracion interrupciones
+  59   1          EA  = 1; // Interrupciones globales activadas
+  60   1          ET0 = 1; // Interrupcion TR0 activada
+  61   1      
+  62   1          // Encendemos la primera secuencia segun sea el valor de sentido y fijamos en que posicion del indice 
              -estariamos
-  55   1          if (sentido == 1) {
-  56   2              P1     = 0x80;
-  57   2              indice = 1;
-  58   2          }
-  59   1          if (sentido == 0) {
-  60   2              P1     = 0xFF;
-  61   2              indice = 16;
-  62   2          }
-  63   1      
-  64   1          // Ponemos en marcha el TR0
-  65   1          TR0 = 1;
-  66   1      }
-  67          
-  68          void interrupcionTR0(void) interrupt 1 using 1
-  69          {
-  70   1          /*Posible solucion al problema del while, si metemos todo el codigo que se ejecuta en la
-  71   1          interrupcion en un if,mejor opcion meter codigo en el while*/
-  72   1      
-  73   1          // Variables locales **ESTE ARRAY HA DADO PROBLEMAS PONIENDO LA EXPRESION EN BINARIO**
-  74   1          unsigned char code codigo[18] = {0x80,
-  75   1                                           0x40,
-  76   1                                           0x20,
-  77   1                                           0x10,
-  78   1                                           0x08,
-  79   1                                           0x04,
-  80   1                                           0x02,
-  81   1                                           0x01,
-  82   1                                           0xAA,
-  83   1                                           0x55,
-  84   1                                           0x80,
-  85   1                                           0xC0,
-  86   1                                           0xE0,
-  87   1                                           0xF0,
-  88   1                                           0xF8,
-  89   1                                           0xFC,
-  90   1                                           0xFE,
-  91   1                                           0xFF};
-  92   1          static unsigned char contador;
-  93   1      
-  94   1          unsigned char desbordamientos;
-  95   1      
-  96   1          /* Recarga Carga TR0 SUPER IMPORTANTE, NO DEJA DE FUNCIONAR PERO DA ERRORES DE TIMEPO, VA A SUMAR
-  97   1             EL CONTADOR ENTERO, PARA DETECTAR ESTE FALLO EN UN SEGUNDO CONTARIA +- EL DOBLE DEL MAXIMO UNOS 130
+  63   1          if (sentido == 1) {
+  64   2              P1     = 0x80;
+  65   2              indice = 1;
+  66   2          }
+  67   1          if (sentido == 0) {
+  68   2              P1     = 0xFF;
+  69   2              indice = 16;
+  70   2          }
+  71   1      
+  72   1          /* Ponemos en marcha el TR0  Se añade TR0 al bucle infinito, no es necesario aqui,
+  73   1          solo tendremos el TR conectado cuando este marcha habilitada */
+  74   1          // TR0 = 1;
+  75   1      }
+  76          
+  77          void interrupcionTR0(void) interrupt 1 using 1
+  78          {
+  79   1          /*################################ SOLUCIONADO Y EXPLICADO EN EL MAIN ################################
+             -######*/
+  80   1          /*Posible solucion al problema del while, si metemos todo el codigo que se ejecuta en la
+  81   1          interrupcion en un if,mejor opcion meter codigo en el while*/ /*SOLOCIONADO Y EXPLICADO EN EL MAIN*/ 
+  82   1          /*####################################################################################################
+             -#######*/
+  83   1      
+  84   1          // Variables locales **ESTE ARRAY HA DADO PROBLEMAS PONIENDO LA EXPRESION EN BINARIO**
+  85   1          unsigned char code codigo[18] = {0x80,
+  86   1                                           0x40,
+  87   1                                           0x20,
+  88   1                                           0x10,
+  89   1                                           0x08,
+  90   1                                           0x04,
+  91   1                                           0x02,
+  92   1                                           0x01,
+  93   1                                           0xAA,
+  94   1                                           0x55,
+  95   1                                           0x80,
+  96   1                                           0xC0,
+  97   1                                           0xE0,
+  98   1                                           0xF0,
+  99   1                                           0xF8,
+ 100   1                                           0xFC,
+ 101   1                                           0xFE,
+ 102   1                                           0xFF};
+ 103   1          static unsigned char contador;
+ 104   1      
+ 105   1          unsigned char desbordamientos;
+ 106   1      
+ 107   1          /* Recarga Carga TR0 SUPER IMPORTANTE, NO DEJA DE FUNCIONAR PERO DA ERRORES DE TIMEPO, VA A SUMAR
+ 108   1             EL CONTADOR ENTERO, PARA DETECTAR ESTE FALLO EN UN SEGUNDO CONTARIA +- EL DOBLE DEL MAXIMO UNOS 130
              -000
-  98   1             MICRO SEGUNDOS*/
-  99   1          TL0 = TL_0;
- 100   1          TH0 = TH_0;
- 101   1      
- 102   1          // Comprobamos velocidad y la fijamos los desbordamientos
- 103   1          // VELOCIDAD 1/2 SEGUNDO
- 104   1          if (velocidad == 0) {
- 105   2              desbordamientos = DESB_x_SEG / 2;
- 106   2              if (contador > 10) { contador = 0; } /*SI NO SE PONE A CERO Y EL CONTADOR ESTA POR NECIMA DEL VALO
-             -R
- 107   2                                                     DE DESBORDAMIENTO SIGUE SUBIENDO HASTA DESBORDAR LA VARIABL
-             -E*/
- 108   2          }
- 109   1          // VELOCIDAD 1 SEGUNDO
- 110   1          if (velocidad == 1) {
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 10:31:39 PAGE 3   
+ 109   1             MICRO SEGUNDOS*/
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 20:23:54 PAGE 3   
 
- 111   2              desbordamientos = DESB_x_SEG;
- 112   2          }
- 113   1      
- 114   1          contador++;
- 115   1      
- 116   1          // Verificamos el valor de contador para cambiar el codigo y el sentido de la secuencia
- 117   1          // Sentido bajada
- 118   1          if ((contador == desbordamientos) && (sentido == 1)) {
- 119   2      
- 120   2              // Aplicamos la senal de control
- 121   2              P1 = codigo[indice];
- 122   2              // Desplazamos el indice de array
- 123   2              indice++;
- 124   2              // Reseteamos contador
- 125   2              contador = 0;
- 126   2              // Si tenemos el indice desbordado lo reseteamos al primer valor de indice segun su direccion
- 127   2              if (indice == 18) { indice = 0; }
- 128   2          }
- 129   1      
- 130   1          // Sentido subida
- 131   1          if ((contador == desbordamientos) && (sentido == 0)) {
- 132   2      
- 133   2              // Aplicamos la senal de control
- 134   2              P1 = codigo[indice];
- 135   2              // Desplazamos el indice de array
- 136   2              indice--;
- 137   2              // Reseteamos contador
- 138   2              contador = 0;
- 139   2              // Si tenemos el indice desbordado lo reseteamos al primer valor de indice segun su direccion
- 140   2              if (indice == 0) { indice = 17; }
- 141   2          }
- 142   1      }
+ 110   1          TL0 = TL_0;
+ 111   1          TH0 = TH_0;
+ 112   1      
+ 113   1          // Comprobamos velocidad y la fijamos los desbordamientos
+ 114   1          // VELOCIDAD 1/2 SEGUNDO
+ 115   1          if (velocidad == 0) {
+ 116   2              desbordamientos = DESB_x_SEG / 2;
+ 117   2              if (contador > 10) { contador = 0; } /*SI NO SE PONE A CERO Y EL CONTADOR ESTA POR NECIMA DEL VALO
+             -R
+ 118   2                                                     DE DESBORDAMIENTO SIGUE SUBIENDO HASTA DESBORDAR LA VARIABL
+             -E*/
+ 119   2          }
+ 120   1          // VELOCIDAD 1 SEGUNDO
+ 121   1          if (velocidad == 1) {
+ 122   2              desbordamientos = DESB_x_SEG;
+ 123   2          }
+ 124   1      
+ 125   1          contador++;
+ 126   1      
+ 127   1          // Verificamos el valor de contador para cambiar el codigo y el sentido de la secuencia
+ 128   1          // Sentido bajada
+ 129   1          if ((contador == desbordamientos) && (sentido == 1)) {
+ 130   2      
+ 131   2              // Aplicamos la senal de control
+ 132   2              P1 = codigo[indice];
+ 133   2              // Desplazamos el indice de array
+ 134   2              indice++;
+ 135   2              // Reseteamos contador
+ 136   2              contador = 0;
+ 137   2              // Si tenemos el indice desbordado lo reseteamos al primer valor de indice segun su direccion
+ 138   2              if (indice == 18) { indice = 0; }
+ 139   2          }
+ 140   1      
+ 141   1          // Sentido subida
+ 142   1          if ((contador == desbordamientos) && (sentido == 0)) {
+ 143   2      
+ 144   2              // Aplicamos la senal de control
+ 145   2              P1 = codigo[indice];
+ 146   2              // Desplazamos el indice de array
+ 147   2              indice--;
+ 148   2              // Reseteamos contador
+ 149   2              contador = 0;
+ 150   2              // Si tenemos el indice desbordado lo reseteamos al primer valor de indice segun su direccion
+ 151   2              if (indice == 0) { indice = 17; }
+ 152   2          }
+ 153   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    162    ----
+   CODE SIZE        =    178    ----
    CONSTANT SIZE    =     18    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

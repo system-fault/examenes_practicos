@@ -13,7 +13,7 @@ sbit sentido   = 0xC1;
 sbit velocidad = 0xC2;
 
 unsigned char TL_0, TH_0;
-unsigned char indice;
+unsigned char indice; // Se hace variable local si inicializas una letra en el panel, si no fuese asi podria ser local para ahorrar memoria
 
 void main(void)
 {
@@ -21,12 +21,20 @@ void main(void)
     inicializar();
     while (1) {
 
-        /*PROBLEMA CON ESTE WHILE SI LO DEJAS SIN CODIGO DENTRO SALTA LA INTERRUPCION SIEMPRE,
-        AL NO TENER CODIGO SUPONGO QUE ENTRE QUE SALE DEL WHILE Y VUELVE A COMPROBAR ENTRA LA INTERRUCION
-        Y EJECUATA EL CODIGO
-        LA EXPLICACION ES QUE SI TIENE CODIGO EJECUTA EL CODIGO Y DESDE DENTRO DEL WHILE COMPRUEBA LA CONDICION
-        SI EL WHILE ESTA VACIO SALE Y VUELVE A VALORAR LA EXPRESION, EN ESO MOMENTO SALTA LA INTERRUPCION*/
-			while (marcha == 0); { P1 = 0xFF; }
+        /*ESTE PROGRAMA DIO PROBLEMAS, NUNCA PARABA, LA INTERRUPCION SE EJECUTABA SIEMPRE Y NUNCA PARABA DE EJECUTARSE EL CODIGO*/
+        /*SOLUCION MAS LOGICA!!!!!! PARA EL TR EN EL WHILE Y SE ACTIVA CUANDO MARCHA ON, SE SOLUCINA EL PROBLEMA, SI EL TR ESTA
+        ENCENDIDO ES IMPOSIBLE EVITAR QUE LA INTERRUPCION SALTE, POR ESO ES UNA INTERRUPCION*/
+        while (marcha == 0) {
+            // Apagamos el letrero TR0 y dejamos cargado para cuando marcha ON
+            P1  = 0x00;
+            TR0 = 0;
+            TL0 = TL_0;
+            TH0 = TH_0;
+        }
+        if ((marcha == 1) && (TR0 == 0)) // Si el temporizador esta encendido nos saltamos esta instruccion
+        {
+            TR0 = 1;
+        }
     }
 }
 
@@ -40,7 +48,7 @@ void inicializar(void)
     // Configuramos TMOD para el TR0 modo 16bits
     TMOD = 0x01;
     // Calculamos la carga inicial de temporizador
-    valor_inicial_TR0 = (0xFFFF - 1) - BASE_TIEMPO * FREQ_OSCI / 12.0;
+    valor_inicial_TR0 = (0xFFFF + 1) - BASE_TIEMPO * FREQ_OSCI / 12.0;
     // Carga de los valores en TR0
     TL_0 = valor_inicial_TR0;
     TH_0 = valor_inicial_TR0 >> 8;
@@ -61,14 +69,18 @@ void inicializar(void)
         indice = 16;
     }
 
-    // Ponemos en marcha el TR0
-    TR0 = 1;
+    /* Ponemos en marcha el TR0  Se añade TR0 al bucle infinito, no es necesario aqui,
+    solo tendremos el TR conectado cuando este marcha habilitada */
+    // TR0 = 1;
 }
 
 void interrupcionTR0(void) interrupt 1 using 1
 {
+    /*################################ SOLUCIONADO Y EXPLICADO EN EL MAIN ######################################*/
     /*Posible solucion al problema del while, si metemos todo el codigo que se ejecuta en la
     interrupcion en un if,mejor opcion meter codigo en el while*/
+    /*SOLOCIONADO Y EXPLICADO EN EL MAIN*/
+    /*###########################################################################################################*/
 
     // Variables locales **ESTE ARRAY HA DADO PROBLEMAS PONIENDO LA EXPRESION EN BINARIO**
     unsigned char code codigo[18] = {0x80,
@@ -99,7 +111,7 @@ void interrupcionTR0(void) interrupt 1 using 1
     TL0 = TL_0;
     TH0 = TH_0;
 
-    // Comprobamos velocidad y la fijamos los desbordamientos
+    // Comprobamos velocidad y fijamos los desbordamientos
     // VELOCIDAD 1/2 SEGUNDO
     if (velocidad == 0) {
         desbordamientos = DESB_x_SEG / 2;
@@ -111,9 +123,11 @@ void interrupcionTR0(void) interrupt 1 using 1
         desbordamientos = DESB_x_SEG;
     }
 
+    // Sumamos un desboradamiento
     contador++;
 
     // Verificamos el valor de contador para cambiar el codigo y el sentido de la secuencia
+    
     // Sentido bajada
     if ((contador == desbordamientos) && (sentido == 1)) {
 
