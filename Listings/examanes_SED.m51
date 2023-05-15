@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/13/2023  19:33:11  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/15/2023  10:31:39  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -35,7 +35,7 @@ LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
             CODE    086DH     002AH     UNIT         ?PR?INICIALIZAR?EXAMEN
             CODE    0897H     0012H     UNIT         ?CO?EXAMEN
             CODE    08A9H     000CH     UNIT         ?C_C51STARTUP
-            CODE    08B5H     0008H     UNIT         ?PR?MAIN?EXAMEN
+            CODE    08B5H     000BH     UNIT         ?PR?MAIN?EXAMEN
 
 
 
@@ -59,7 +59,7 @@ SEGMENT
 
 
 SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  19:33:11  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  10:31:39  PAGE 2
 
 
 
@@ -89,43 +89,44 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   C:08B5H         LINE#         19
   C:08B5H         LINE#         21
   C:08B8H         LINE#         22
-  C:08B8H         LINE#         27
+  C:08B8H         LINE#         29
+  C:08BEH         LINE#         30
   -------         ENDPROC       MAIN
   -------         PROC          INICIALIZAR
   -------         DO            
   D:0006H         SYMBOL        valor_inicial_TR0
   -------         ENDDO         
-  C:086DH         LINE#         33
-  C:086DH         LINE#         34
-  C:086DH         LINE#         39
-  C:0870H         LINE#         41
-  C:0874H         LINE#         43
-  C:0876H         LINE#         44
-  C:0878H         LINE#         45
-  C:087BH         LINE#         46
-  C:087EH         LINE#         49
-  C:0880H         LINE#         50
-  C:0882H         LINE#         53
-  C:0885H         LINE#         54
-  C:0888H         LINE#         55
-  C:088BH         LINE#         56
-  C:088BH         LINE#         57
-  C:088EH         LINE#         58
-  C:0891H         LINE#         59
-  C:0894H         LINE#         60
-  C:0894H         LINE#         63
-  C:0896H         LINE#         64
+  C:086DH         LINE#         35
+  C:086DH         LINE#         36
+  C:086DH         LINE#         41
+  C:0870H         LINE#         43
+  C:0874H         LINE#         45
+  C:0876H         LINE#         46
+  C:0878H         LINE#         47
+  C:087BH         LINE#         48
+  C:087EH         LINE#         51
+  C:0880H         LINE#         52
+  C:0882H         LINE#         55
+  C:0885H         LINE#         56
+  C:0888H         LINE#         57
+  C:088BH         LINE#         58
+  C:088BH         LINE#         59
+  C:088EH         LINE#         60
+  C:0891H         LINE#         61
+  C:0894H         LINE#         62
+  C:0894H         LINE#         65
+  C:0896H         LINE#         66
   -------         ENDPROC       INICIALIZAR
   -------         PROC          INTERRUPCIONTR0
   -------         DO            
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  10:31:39  PAGE 3
+
+
   C:0897H         SYMBOL        codigo
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/13/2023  19:33:11  PAGE 3
-
-
   D:0010H         SYMBOL        contador
   D:000FH         SYMBOL        desbordamientos
   -------         ENDDO         
-  C:0800H         LINE#         66
+  C:0800H         LINE#         68
   C:080BH         LINE#         99
   C:080EH         LINE#         100
   C:0811H         LINE#         104
@@ -153,8 +154,8 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         ENDMOD        EXAMEN
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 00B4H BYTE ( 8%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 00B7H BYTE ( 8%) *
 ******************************************************************************
 
-Program Size: data=21.0 xdata=0 code=195
+Program Size: data=21.0 xdata=0 code=198
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
