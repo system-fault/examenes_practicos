@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 20:48:06 PAGE 1   
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 23:19:14 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
@@ -12,144 +12,152 @@ line level    source
    2          
    3          #define BASE_DE_TIEMPO 50000
    4          #define FREQ_OSCI      11.0592
-   5          
-   6          // Declaracion de funciones
+   5          #define CANAL_REF_TEMPERATURA 0
+   6          #define CANAL_SENSOR_TEMPERATURA 1
    7          
-   8          void inicialicizar(void);
-   9          unsigned int conversionAD(unsigned char canal);
+   8          
+   9          // Declaracion de funciones
   10          
-  11          // Variables globales
-  12          unsigned char TL_carga, TH_carga;
-  13          unsigned char contador; //
-  14          
-  15          sbit marcha = 0xC0;
-  16          
-  17          void main(void)
-  18          {
-  19   1          inicialicizar();
-  20   1      
-  21   1          while (1) {
-  22   2              while (marcha == 0) {
-  23   3                  // Paramos el timer
-  24   3                  TR0 = 0;
-  25   3                  // Apagamos las salidas
-  26   3                  P3 = 0xC3;
-  27   3                  // Carga de nuevo valores iniciales TR0
-  28   3                  TL0 = TL_carga;
-  29   3                  TH0 = TH_carga;
-  30   3                  //Reseteamos el contador
-  31   3                  contador = 0;
-  32   3      
-  33   3              }
-  34   2      
-  35   2              if ((marcha == 1) && (TR0 == 0)) {
-  36   3                  // Ponemos en marcha el TR0
-  37   3                  TR0 = 1;
-  38   3              }
-  39   2          }
-  40   1      }
-  41          
-  42          // Definicion de funciones
+  11          void inicialicizar(void);
+  12          unsigned int conversionAD(unsigned char canal);
+  13          
+  14          // Variables globales
+  15          unsigned char TL_carga, TH_carga;
+  16          unsigned char contador;
+  17          
+  18          sbit marcha = 0xC0; // Activa el control de temperatura de la placa de induccion
+  19          
+  20          void main(void)
+  21          {
+  22   1          inicialicizar();
+  23   1      
+  24   1          while (1) {
+  25   2              while (marcha == 0) {
+  26   3                  // Paramos el timer
+  27   3                  TR0 = 0;
+  28   3                  // Apagamos las salidas
+  29   3                  P3 = 0xC3;
+  30   3                  // Carga de nuevo valores iniciales TR0
+  31   3                  TL0 = TL_carga;
+  32   3                  TH0 = TH_carga;
+  33   3                  // Reseteamos el contador
+  34   3                  contador = 0;
+  35   3              }
+  36   2      
+  37   2              if ((marcha == 1) && (TR0 == 0)) {
+  38   3                  // Ponemos en marcha el TR0
+  39   3                  TR0 = 1;
+  40   3              }
+  41   2          }
+  42   1      }
   43          
-  44          void inicialicizar(void)
-  45          {
-  46   1      
-  47   1          // Variables locales
-  48   1          unsigned int vi_inicial;
-  49   1      
-  50   1          // Configuramos el TR en modo 01 16bit modo timer T MODO TMOD!!!!
-  51   1          TMOD = 0x01;
+  44          /*################################ SFUNCIONES ######################################*/
+  45          
+  46          // Definicion de funciones
+  47          
+  48          
+  49          // ######INICIALIZAR######//
+  50          void inicialicizar(void)
+  51          {
   52   1      
-  53   1          // Calculo del valor inicial de TR0
-  54   1          vi_inicial = (0xFFFF - 1) - BASE_DE_TIEMPO * FREQ_OSCI / 12.0;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 20:48:06 PAGE 2   
+  53   1          // Variables locales
+  54   1          unsigned int vi_inicial;
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 23:19:14 PAGE 2   
 
   55   1      
-  56   1          // Carga en TL0 y TH0
-  57   1          TL0 = TL_carga = vi_inicial;
-  58   1          TH0 = TH_carga = vi_inicial >> 8;
-  59   1      
-  60   1          // Habilitacion interrupciones
-  61   1          EA  = 1;
-  62   1          ET0 = 1;
-  63   1      
-  64   1          // Ponemos P3.2;P3.3;P3.4;P3.5 a 0 para evitar problemas
-  65   1          P3 = 0xC3;
-  66   1      
-  67   1          // Arrancamos el TR0
-  68   1          // TR0 = 1;
-  69   1      }
-  70          
-  71          unsigned int conversionAD(unsigned char canal)
-  72          {
-  73   1          /*OJO!!!! AL SIMULAR LOS VOLTAJES TIENEN QUE SER REALES, LOS PUERTOS ACEPTAN ENTRE 0 Y 5 VOLTIOS
-  74   1          SI SE SIMULA SE SIMULAN VOLTAJES ENTRE 0-5 SI SUBES DE 5 VOLTIOS DESBORDAS Y NO FUNCIONA*/
-  75   1      
-  76   1          // Variable local para devolver el valor
-  77   1          unsigned int resultadoConversion; // Mismo tipo de dato que la funcion unsigned int!!!!
-  78   1      
-  79   1          // Ponemos ADCON al 0
-  80   1          ADCON = ADCON & 0x00;
-  81   1      
-  82   1          // Configuramos ADCON
-  83   1          ADCON = ADCON | canal;
-  84   1      
-  85   1          // Iniciamos la conversion
-  86   1          ADCON = ADCON | 0x8;
-  87   1      
-  88   1          // Esperamos a que la conversion este completada
+  56   1          // Configuramos el TR en modo 01 16bit modo timer T MODO TMOD!!!!
+  57   1          TMOD = 0x01;
+  58   1      
+  59   1          // Calculo del valor inicial de TR0
+  60   1          vi_inicial = (0xFFFF - 1) - BASE_DE_TIEMPO * FREQ_OSCI / 12.0;
+  61   1      
+  62   1          // Carga en TL0 y TH0
+  63   1          TL0 = TL_carga = vi_inicial;
+  64   1          TH0 = TH_carga = vi_inicial >> 8;
+  65   1      
+  66   1          // Habilitacion interrupciones
+  67   1          EA  = 1;
+  68   1          ET0 = 1;
+  69   1      
+  70   1          // Ponemos P3.2;P3.3;P3.4;P3.5 a 0 para evitar problemas
+  71   1          P3 = 0xC3;
+  72   1      }
+  73          
+  74          
+  75          // ###### CONVERSION ANALOGICO DIGITAL ######//
+  76          unsigned int conversionAD(unsigned char canal)
+  77          {
+  78   1          /*OJO!!!! AL SIMULAR LOS VOLTAJES TIENEN QUE SER REALES, LOS PUERTOS ACEPTAN ENTRE 0 Y 5 VOLTIOS
+  79   1          SI SE SIMULA SE SIMULAN VOLTAJES ENTRE 0-5 SI SUBES DE 5 VOLTIOS DESBORDAS Y NO FUNCIONA*/
+  80   1      
+  81   1          // Variable local para devolver el valor
+  82   1          unsigned int resultadoConversion; // Mismo tipo de dato que la funcion unsigned int!!!!
+  83   1      
+  84   1          // Ponemos ADCON al 0
+  85   1          ADCON = ADCON & 0x00;
+  86   1      
+  87   1          // Configuramos ADCON
+  88   1          ADCON = ADCON | canal;
   89   1      
-  90   1          while ((ADCON & (0x10)) == 0)
-  91   1              ;
+  90   1          // Iniciamos la conversion
+  91   1          ADCON = ADCON | 0x8;
   92   1      
-  93   1          // Ponemos ADCI a 0
-  94   1          ADCON = ADCON & 0xEF;
-  95   1      
-  96   1          // Guardamos en resultadoConversion
+  93   1          // Esperamos a que la conversion este completada
+  94   1      
+  95   1          while ((ADCON & (0x10)) == 0)
+  96   1              ;
   97   1      
-  98   1          resultadoConversion = (ADCON >> 6) | ADCH << 2;
-  99   1      
- 100   1          return (resultadoConversion);
- 101   1      }
- 102          
- 103          void interrupcionTR0(void) interrupt 1 using 1
- 104          {
- 105   1      
- 106   1          // Variables locales
- 107   1          float referenciaTemperatura, temperatura; //La temperatura es un valor decimal
- 108   1          unsigned int codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura; //Mismo dato que la funcion
-             - de la que recibe el dato
- 109   1          float error; //Resultado de operar con decimales
- 110   1          
- 111   1          // Carga de nuevo valores iniciales TR0
- 112   1          TL0 = TL_carga;
- 113   1          TH0 = TH_carga;
- 114   1      
- 115   1          contador++;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 20:48:06 PAGE 3   
+  98   1          // Ponemos ADCI a 0
+  99   1          ADCON = ADCON & 0xEF;
+ 100   1      
+ 101   1          // Guardamos en resultadoConversion
+ 102   1          resultadoConversion = (ADCON >> 6) | ADCH << 2;
+ 103   1          // Devolvemos el resultado
+ 104   1          return (resultadoConversion);
+ 105   1      }
+ 106          
+ 107          
+ 108          // ###### INTERRUPCION TR0 ######//
+ 109          void interrupcionTR0(void) interrupt 1 using 1
+ 110          {
+ 111   1      
+ 112   1          // Variables locales
+ 113   1          float referenciaTemperatura, temperatura;                                  // La temperatura es un val
+             -or decimal
+ 114   1          unsigned int codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura; // Mismo dato que la funcio
+             -n de la que recibe el dato
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/15/2023 23:19:14 PAGE 3   
 
+ 115   1          float error;                                                               // Resultado de operar con 
+             -decimales
  116   1      
- 117   1          if (contador == 200) {
- 118   2      
- 119   2              // Obtenenmos los valores de la referencia de temperatura y la temperatura
- 120   2              codigoDigitalReferenciaTemperatura = conversionAD(0);
- 121   2              codigoDigitalTemperatura           = conversionAD(1);
- 122   2              //Calcula la temperatura y la referencia de temperatura para restar y hacer el error
- 123   2              referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
- 124   2              temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
- 125   2              // Obtenemos el error
- 126   2              error = referenciaTemperatura - temperatura;
- 127   2      
- 128   2              // Segun el signo de error seleccionamos una senal de salida en P3 y ponemos a cero el contador pa
+ 117   1          // Carga de nuevo valores iniciales TR0
+ 118   1          TL0 = TL_carga;
+ 119   1          TH0 = TH_carga;
+ 120   1      
+ 121   1          contador++;
+ 122   1      
+ 123   1          if (contador == 200) {
+ 124   2      
+ 125   2              // Obtenenmos los valores de la referencia de temperatura y la temperatura
+ 126   2              codigoDigitalReferenciaTemperatura = conversionAD(CANAL_REF_TEMPERATURA);
+ 127   2              codigoDigitalTemperatura           = conversionAD(CANAL_SENSOR_TEMPERATURA);
+ 128   2              // Calcula la temperatura y la referencia de temperatura para restar y hacer el error
+ 129   2              referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
+ 130   2              temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
+ 131   2              // Obtenemos el error
+ 132   2              error = referenciaTemperatura - temperatura;
+ 133   2      
+ 134   2              // Segun el signo de error seleccionamos una senal de salida en P3 y ponemos a cero el contador pa
              -ra volver a contar 10 segundos
- 129   2              if (error > 0) {
- 130   3                  P3 = 0xFF;
- 131   3              } else if (error <= 0) {
- 132   3                  P3 = 0xC3;
- 133   3              }
- 134   2              contador = 0;
- 135   2          }
- 136   1      }
+ 135   2              if (error > 0) {
+ 136   3                  P3 = 0xFF;
+ 137   3              } else if (error <= 0) {
+ 138   3                  P3 = 0xC3;
+ 139   3              }
+ 140   2              contador = 0;
+ 141   2          }
+ 142   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

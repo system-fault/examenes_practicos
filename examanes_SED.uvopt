@@ -137,16 +137,16 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDP51</Key>
-          <Name>(98=903,10,1246,304,1)(82=660,181,868,296,0)(83=665,62,873,177,0)(84=-1,-1,-1,-1,0)(85=452,67,660,182,1)(5009=676,76,884,191,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=999,307,1209,582,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=1344,202,1570,547,1)</Name>
+          <Name>(98=903,10,1246,304,1)(82=660,181,868,296,0)(83=665,62,873,177,0)(84=-1,-1,-1,-1,0)(85=666,221,874,336,1)(5009=676,76,884,191,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=999,307,1209,582,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=1344,202,1570,547,1)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>115</LineNumber>
+          <LineNumber>132</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16774368</Address>
+          <Address>-16774264</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -155,7 +155,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>EXAMEN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\EXAMEN\115</Expression>
+          <Expression>\EXAMEN\132</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

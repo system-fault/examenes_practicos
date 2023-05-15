@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/15/2023  20:48:06  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/15/2023  23:19:14  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -59,7 +59,7 @@ SEGMENT                              DATA_GROUP
 *** NEW ROOT ***************************************************
 
 ?C_C51STARTUP                      -----    -----
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  20:48:06  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  23:19:14  PAGE 2
 
 
   +--> ?PR?MAIN?EXAMEN
@@ -94,55 +94,55 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   B:00C0H.0       PUBLIC        marcha
   D:001CH         PUBLIC        TH_carga
   -------         PROC          MAIN
-  C:0C0DH         LINE#         17
-  C:0C0DH         LINE#         18
-  C:0C0DH         LINE#         19
-  C:0C10H         LINE#         21
-  C:0C10H         LINE#         22
-  C:0C13H         LINE#         24
-  C:0C15H         LINE#         26
-  C:0C18H         LINE#         28
-  C:0C1BH         LINE#         29
-  C:0C1EH         LINE#         31
-  C:0C21H         LINE#         33
-  C:0C23H         LINE#         35
-  C:0C29H         LINE#         37
-  C:0C2BH         LINE#         38
-  C:0C2BH         LINE#         39
+  C:0C0DH         LINE#         20
+  C:0C0DH         LINE#         21
+  C:0C0DH         LINE#         22
+  C:0C10H         LINE#         24
+  C:0C10H         LINE#         25
+  C:0C13H         LINE#         27
+  C:0C15H         LINE#         29
+  C:0C18H         LINE#         31
+  C:0C1BH         LINE#         32
+  C:0C1EH         LINE#         34
+  C:0C21H         LINE#         35
+  C:0C23H         LINE#         37
+  C:0C29H         LINE#         39
+  C:0C2BH         LINE#         40
+  C:0C2BH         LINE#         41
   -------         ENDPROC       MAIN
   -------         PROC          INICIALICIZAR
   -------         DO            
   D:0006H         SYMBOL        vi_inicial
   -------         ENDDO         
-  C:0C2DH         LINE#         44
-  C:0C2DH         LINE#         45
+  C:0C2DH         LINE#         50
   C:0C2DH         LINE#         51
-  C:0C30H         LINE#         54
-  C:0C34H         LINE#         57
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  20:48:06  PAGE 3
+  C:0C2DH         LINE#         57
+  C:0C30H         LINE#         60
+  C:0C34H         LINE#         63
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  23:19:14  PAGE 3
 
 
-  C:0C3BH         LINE#         58
-  C:0C42H         LINE#         61
-  C:0C44H         LINE#         62
-  C:0C46H         LINE#         65
-  C:0C49H         LINE#         69
+  C:0C3BH         LINE#         64
+  C:0C42H         LINE#         67
+  C:0C44H         LINE#         68
+  C:0C46H         LINE#         71
+  C:0C49H         LINE#         72
   -------         ENDPROC       INICIALICIZAR
   -------         PROC          _CONVERSIONAD
   D:0007H         SYMBOL        canal
   -------         DO            
   D:0006H         SYMBOL        resultadoConversion
   -------         ENDDO         
-  C:0BE5H         LINE#         71
-  C:0BE5H         LINE#         72
-  C:0BE5H         LINE#         80
-  C:0BE8H         LINE#         83
-  C:0BEBH         LINE#         86
-  C:0BEEH         LINE#         90
-  C:0BF4H         LINE#         94
-  C:0BF7H         LINE#         98
-  C:0C0CH         LINE#         100
-  C:0C0CH         LINE#         101
+  C:0BE5H         LINE#         76
+  C:0BE5H         LINE#         77
+  C:0BE5H         LINE#         85
+  C:0BE8H         LINE#         88
+  C:0BEBH         LINE#         91
+  C:0BEEH         LINE#         95
+  C:0BF4H         LINE#         99
+  C:0BF7H         LINE#         102
+  C:0C0CH         LINE#         104
+  C:0C0CH         LINE#         105
   -------         ENDPROC       _CONVERSIONAD
   -------         PROC          INTERRUPCIONTR0
   -------         DO            
@@ -152,24 +152,24 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   D:0014H         SYMBOL        codigoDigitalTemperatura
   D:0016H         SYMBOL        error
   -------         ENDDO         
-  C:0B0DH         LINE#         103
-  C:0B1AH         LINE#         112
-  C:0B1DH         LINE#         113
-  C:0B20H         LINE#         115
-  C:0B22H         LINE#         117
-  C:0B2BH         LINE#         120
-  C:0B35H         LINE#         121
-  C:0B3EH         LINE#         123
-  C:0B6BH         LINE#         124
-  C:0B88H         LINE#         126
-  C:0BA7H         LINE#         129
-  C:0BBBH         LINE#         130
-  C:0BBEH         LINE#         131
-  C:0BD4H         LINE#         132
-  C:0BD7H         LINE#         133
-  C:0BD7H         LINE#         134
-  C:0BDAH         LINE#         135
-  C:0BDAH         LINE#         136
+  C:0B0DH         LINE#         109
+  C:0B1AH         LINE#         118
+  C:0B1DH         LINE#         119
+  C:0B20H         LINE#         121
+  C:0B22H         LINE#         123
+  C:0B2BH         LINE#         126
+  C:0B35H         LINE#         127
+  C:0B3EH         LINE#         129
+  C:0B6BH         LINE#         130
+  C:0B88H         LINE#         132
+  C:0BA7H         LINE#         135
+  C:0BBBH         LINE#         136
+  C:0BBEH         LINE#         137
+  C:0BD4H         LINE#         138
+  C:0BD7H         LINE#         139
+  C:0BD7H         LINE#         140
+  C:0BDAH         LINE#         141
+  C:0BDAH         LINE#         142
   -------         ENDPROC       INTERRUPCIONTR0
   -------         ENDMOD        EXAMEN
 
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         ENDMOD        ?C?FPADD
 
   -------         MODULE        ?C?FPMUL
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  20:48:06  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  23:19:14  PAGE 4
 
 
   C:08F8H         PUBLIC        ?C?FPMUL
