@@ -10,6 +10,7 @@ unsigned int conversionAD(unsigned char canal);
 
 // Variables globales
 unsigned char TL_carga, TH_carga;
+unsigned char contador; //
 
 sbit marcha = 0xC0;
 
@@ -18,8 +19,22 @@ void main(void)
     inicialicizar();
 
     while (1) {
-        while (marcha == 0)
-            ;
+        while (marcha == 0) {
+            // Paramos el timer
+            TR0 = 0;
+            // Apagamos las salidas
+            P3 = 0xC3;
+            // Carga de nuevo valores iniciales TR0
+            TL0 = TL_carga;
+            TH0 = TH_carga;
+            // Reseteamos el contador
+            contador = 0;
+        }
+
+        if ((marcha == 1) && (TR0 == 0)) {
+            // Ponemos en marcha el TR0
+            TR0 = 1;
+        }
     }
 }
 
@@ -47,9 +62,6 @@ void inicialicizar(void)
 
     // Ponemos P3.2;P3.3;P3.4;P3.5 a 0 para evitar problemas
     P3 = 0xC3;
-
-    // Arrancamos el TR0
-    TR0 = 1;
 }
 
 unsigned int conversionAD(unsigned char canal)
@@ -78,9 +90,8 @@ unsigned int conversionAD(unsigned char canal)
     ADCON = ADCON & 0xEF;
 
     // Guardamos en resultadoConversion
-
     resultadoConversion = (ADCON >> 6) | ADCH << 2;
-
+    //Devolvemos el resultado
     return (resultadoConversion);
 }
 
@@ -88,29 +99,28 @@ void interrupcionTR0(void) interrupt 1 using 1
 {
 
     // Variables locales
-    float referenciaTemperatura, temperatura;
-    unsigned int codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura;
-    float error;
-    static unsigned char contador;
+    float referenciaTemperatura, temperatura;                                  // La temperatura es un valor decimal
+    unsigned int codigoDigitalReferenciaTemperatura, codigoDigitalTemperatura; // Mismo dato que la funcion de la que recibe el dato
+    float error;                                                               // Resultado de operar con decimales
+
     // Carga de nuevo valores iniciales TR0
     TL0 = TL_carga;
     TH0 = TH_carga;
 
     contador++;
 
-    // Obtenenmos los valores de la referencia de temperatura y la temperatura
-
-    codigoDigitalReferenciaTemperatura = conversionAD(0);
-    codigoDigitalTemperatura           = conversionAD(1);
-
-    referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
-    temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
-
-    // Obtenemos el error
-    error = referenciaTemperatura - temperatura;
-
-    // Segun el signo de error seleccionamos una se;al de salida en P3 y ponemos a cero el contador para volver a contar 10 segundos
     if (contador == 200) {
+
+        // Obtenenmos los valores de la referencia de temperatura y la temperatura
+        codigoDigitalReferenciaTemperatura = conversionAD(0);
+        codigoDigitalTemperatura           = conversionAD(1);
+        // Calcula la temperatura y la referencia de temperatura para restar y hacer el error
+        referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
+        temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
+        // Obtenemos el error
+        error = referenciaTemperatura - temperatura;
+
+        // Segun el signo de error seleccionamos una senal de salida en P3 y ponemos a cero el contador para volver a contar 10 segundos
         if (error > 0) {
             P3 = 0xFF;
         } else if (error <= 0) {
