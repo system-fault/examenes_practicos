@@ -1,7 +1,9 @@
 #include <reg552.h>
 
-#define BASE_DE_TIEMPO 50000
-#define FREQ_OSCI      11.0592
+#define BASE_DE_TIEMPO           50000
+#define FREQ_OSCI                11.0592
+#define CANAL_REF_TEMPERATURA    0
+#define CANAL_SENSOR_TEMPERATURA 1
 
 // Declaracion de funciones
 
@@ -10,9 +12,9 @@ unsigned int conversionAD(unsigned char canal);
 
 // Variables globales
 unsigned char TL_carga, TH_carga;
-unsigned char contador; //
+unsigned char contador;
 
-sbit marcha = 0xC0;
+sbit marcha = 0xC0; // Activa el control de temperatura de la placa de induccion
 
 void main(void)
 {
@@ -38,8 +40,11 @@ void main(void)
     }
 }
 
+/*################################ SFUNCIONES ######################################*/
+
 // Definicion de funciones
 
+// ######INICIALIZAR######//
 void inicialicizar(void)
 {
 
@@ -64,6 +69,7 @@ void inicialicizar(void)
     P3 = 0xC3;
 }
 
+// ###### CONVERSION ANALOGICO DIGITAL ######//
 unsigned int conversionAD(unsigned char canal)
 {
     /*OJO!!!! AL SIMULAR LOS VOLTAJES TIENEN QUE SER REALES, LOS PUERTOS ACEPTAN ENTRE 0 Y 5 VOLTIOS
@@ -91,10 +97,11 @@ unsigned int conversionAD(unsigned char canal)
 
     // Guardamos en resultadoConversion
     resultadoConversion = (ADCON >> 6) | ADCH << 2;
-    //Devolvemos el resultado
+    // Devolvemos el resultado
     return (resultadoConversion);
 }
 
+// ###### INTERRUPCION TR0 ######//
 void interrupcionTR0(void) interrupt 1 using 1
 {
 
@@ -112,8 +119,8 @@ void interrupcionTR0(void) interrupt 1 using 1
     if (contador == 200) {
 
         // Obtenenmos los valores de la referencia de temperatura y la temperatura
-        codigoDigitalReferenciaTemperatura = conversionAD(0);
-        codigoDigitalTemperatura           = conversionAD(1);
+        codigoDigitalReferenciaTemperatura = conversionAD(CANAL_REF_TEMPERATURA);
+        codigoDigitalTemperatura           = conversionAD(CANAL_SENSOR_TEMPERATURA);
         // Calcula la temperatura y la referencia de temperatura para restar y hacer el error
         referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
         temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
