@@ -13,7 +13,7 @@ sbit sentido   = 0xC1;
 sbit velocidad = 0xC2;
 
 unsigned char TL_0, TH_0;
-unsigned char indice;
+unsigned char indice; // Se hace variable local si inicializas una letra en el panel, si no fuese asi podria ser local para ahorrar memoria
 
 void main(void)
 {
@@ -78,7 +78,8 @@ void interrupcionTR0(void) interrupt 1 using 1
 {
     /*################################ SOLUCIONADO Y EXPLICADO EN EL MAIN ######################################*/
     /*Posible solucion al problema del while, si metemos todo el codigo que se ejecuta en la
-    interrupcion en un if,mejor opcion meter codigo en el while*/ /*SOLOCIONADO Y EXPLICADO EN EL MAIN*/ 
+    interrupcion en un if,mejor opcion meter codigo en el while*/
+    /*SOLOCIONADO Y EXPLICADO EN EL MAIN*/
     /*###########################################################################################################*/
 
     // Variables locales **ESTE ARRAY HA DADO PROBLEMAS PONIENDO LA EXPRESION EN BINARIO**
@@ -110,7 +111,7 @@ void interrupcionTR0(void) interrupt 1 using 1
     TL0 = TL_0;
     TH0 = TH_0;
 
-    // Comprobamos velocidad y la fijamos los desbordamientos
+    // Comprobamos velocidad y fijamos los desbordamientos
     // VELOCIDAD 1/2 SEGUNDO
     if (velocidad == 0) {
         desbordamientos = DESB_x_SEG / 2;
@@ -122,9 +123,11 @@ void interrupcionTR0(void) interrupt 1 using 1
         desbordamientos = DESB_x_SEG;
     }
 
+    // Sumamos un desboradamiento
     contador++;
 
     // Verificamos el valor de contador para cambiar el codigo y el sentido de la secuencia
+    
     // Sentido bajada
     if ((contador == desbordamientos) && (sentido == 1)) {
 
