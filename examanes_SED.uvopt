@@ -137,50 +137,42 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDP51</Key>
-          <Name>(98=879,292,1222,586,0)(82=225,186,433,301,0)(83=982,46,1190,161,1)(84=-1,-1,-1,-1,0)(85=718,111,926,226,0)(5009=982,186,1190,301,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=798,321,1008,596,0)(92=980,321,1190,596,1)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=757,38,983,383,1)</Name>
+          <Name>(98=903,10,1246,304,0)(82=660,181,868,296,0)(83=909,289,1117,404,1)(84=-1,-1,-1,-1,0)(85=452,67,660,182,0)(5009=918,151,1126,266,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=1109,273,1319,548,0)(92=1572,214,1782,489,1)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=1292,347,1518,692,1)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>141</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>-16774126</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>EXAMEN.C</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>verdeIn,0x0A</ItemText>
+          <ItemText>temperatura,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ambarIn,0x0A</ItemText>
+          <ItemText>contador10seg,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rojoIn,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>3</count>
-          <WinNumber>1</WinNumber>
           <ItemText>contador,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>4</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>contador10seg,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>panel</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>temperatura,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>7</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>resultadoConversion,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

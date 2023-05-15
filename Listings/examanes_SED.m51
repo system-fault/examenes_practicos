@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/14/2023  03:56:54  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/15/2023  22:55:50  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -13,8 +13,8 @@ INPUT MODULES INCLUDED:
   .\Objects\examen.obj (EXAMEN)
   C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
   C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPCMP)
   C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
-  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
   C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
@@ -30,38 +30,39 @@ LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     000FH     UNIT         ?DT?EXAMEN
+            DATA    0008H     000BH     UNIT         ?DT?EXAMEN
+            DATA    0013H     0004H     UNIT         _DATA_GROUP_
             IDATA   0017H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
                     0003H     07FDH                  *** GAP ***
-            CODE    0800H     02F2H     UNIT         ?C?LIB_CODE
-            CODE    0AF2H     010EH     UNIT         ?PR?MAIN?EXAMEN
-            CODE    0C00H     006AH     UNIT         ?PR?CONTROLPANEL?EXAMEN
-            CODE    0C6AH     0027H     UNIT         ?PR?_CONVERSIONAD?EXAMEN
-            CODE    0C91H     0022H     UNIT         ?PR?INICIALIZAR?EXAMEN
-            CODE    0CB3H     000CH     UNIT         ?C_C51STARTUP
+            CODE    0800H     0334H     UNIT         ?C?LIB_CODE
+            CODE    0B34H     00E1H     UNIT         ?PR?MAIN?EXAMEN
+            CODE    0C15H     008CH     UNIT         ?PR?CONTROLPANEL?EXAMEN
+            CODE    0CA1H     0027H     UNIT         ?PR?_CONVERSIONAD?EXAMEN
+            CODE    0CC8H     0022H     UNIT         ?PR?INICIALIZAR?EXAMEN
+            CODE    0CEAH     000CH     UNIT         ?C_C51STARTUP
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\examanes_SED (EXAMEN)
 
 
-SEGMENT
-  +--> CALLED SEGMENT
----------------------
-?C_C51STARTUP
+SEGMENT                            DATA_GROUP 
+  +--> CALLED SEGMENT            START    LENGTH
+------------------------------------------------
+?C_C51STARTUP                    -----    -----
   +--> ?PR?MAIN?EXAMEN
 
-?PR?MAIN?EXAMEN
+?PR?MAIN?EXAMEN                  -----    -----
   +--> ?PR?INICIALIZAR?EXAMEN
   +--> ?PR?CONTROLPANEL?EXAMEN
 
-?PR?CONTROLPANEL?EXAMEN
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2023  03:56:54  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  22:55:50  PAGE 2
 
 
+?PR?CONTROLPANEL?EXAMEN          0013H    0004H
   +--> ?PR?_CONVERSIONAD?EXAMEN
 
 
@@ -75,146 +76,158 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0008H         PUBLIC        contador10seg
   B:0090H.1       PUBLIC        ambar
-  D:000CH         PUBLIC        resultadoConversion
   D:00C6H         PUBLIC        ADCH
   B:0090H.7       PUBLIC        panel
-  C:0C91H         PUBLIC        inicializar
+  C:0CC8H         PUBLIC        inicializar
   B:0090H.0       PUBLIC        verde
   B:00C0H.0       PUBLIC        botoPeaton
-  C:0AF2H         PUBLIC        main
-  D:000EH         PUBLIC        TH_1
-  D:000FH         PUBLIC        TL_1
-  D:0010H         PUBLIC        temperatura
+  C:0B34H         PUBLIC        main
+  D:000CH         PUBLIC        TH_1
+  D:000DH         PUBLIC        TL_1
   D:0089H         PUBLIC        TMOD
   B:0090H.2       PUBLIC        rojo
-  D:0012H         PUBLIC        ambarIn
+  D:000EH         PUBLIC        ambarIn
   B:0088H.7       PUBLIC        TF1
   D:008DH         PUBLIC        TH1
-  D:0013H         PUBLIC        verdeIn
+  D:000FH         PUBLIC        verdeIn
   D:008BH         PUBLIC        TL1
-  C:0C6AH         PUBLIC        _conversionAD
+  C:0CA1H         PUBLIC        _conversionAD
   B:0088H.6       PUBLIC        TR1
-  D:0014H         PUBLIC        contador
+  D:0010H         PUBLIC        contador
   D:00C5H         PUBLIC        ADCON
-  D:0016H         PUBLIC        rojoIn
-  C:0C00H         PUBLIC        controlPanel
+  D:0012H         PUBLIC        rojoIn
+  C:0C2AH         PUBLIC        controlPanel
   -------         PROC          MAIN
-  C:0AF2H         LINE#         30
-  C:0AF2H         LINE#         31
-  C:0AF2H         LINE#         33
-  C:0AF5H         LINE#         35
-  C:0AF5H         LINE#         37
-  C:0B02H         LINE#         39
-  C:0B04H         LINE#         41
-  C:0B07H         LINE#         44
-  C:0B09H         LINE#         46
-  C:0B11H         LINE#         48
-  C:0B26H         LINE#         52
-  C:0B29H         LINE#         55
-  C:0B2CH         LINE#         57
-  C:0B31H         LINE#         58
-  C:0B33H         LINE#         59
-  C:0B36H         LINE#         60
-  C:0B38H         LINE#         61
-  C:0B38H         LINE#         63
-  C:0B4BH         LINE#         64
-  C:0B4FH         LINE#         65
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2023  03:56:54  PAGE 3
+  C:0B34H         LINE#         29
+  C:0B34H         LINE#         30
+  C:0B34H         LINE#         32
+  C:0B37H         LINE#         34
+  C:0B37H         LINE#         36
+  C:0B44H         LINE#         38
+  C:0B46H         LINE#         40
+  C:0B49H         LINE#         43
+  C:0B4BH         LINE#         45
+  C:0B53H         LINE#         47
+  C:0B53H         LINE#         50
+  C:0B56H         LINE#         53
+  C:0B59H         LINE#         55
+  C:0B5EH         LINE#         56
+  C:0B60H         LINE#         57
+  C:0B63H         LINE#         58
+  C:0B65H         LINE#         61
+  C:0B68H         LINE#         62
+  C:0B6BH         LINE#         63
+  C:0B6BH         LINE#         65
+  C:0B7EH         LINE#         66
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  22:55:50  PAGE 3
 
 
-  C:0B51H         LINE#         66
-  C:0B54H         LINE#         67
-  C:0B56H         LINE#         68
-  C:0B56H         LINE#         69
-  C:0B58H         LINE#         72
-  C:0B5BH         LINE#         75
-  C:0B68H         LINE#         78
-  C:0B6AH         LINE#         80
-  C:0B6DH         LINE#         83
-  C:0B6FH         LINE#         85
-  C:0B77H         LINE#         87
-  C:0B8CH         LINE#         90
-  C:0B98H         LINE#         91
-  C:0B9CH         LINE#         92
-  C:0B9EH         LINE#         93
-  C:0BA1H         LINE#         94
-  C:0BA3H         LINE#         95
-  C:0BA3H         LINE#         96
-  C:0BA5H         LINE#         98
-  C:0BA8H         LINE#         101
-  C:0BB5H         LINE#         104
-  C:0BB7H         LINE#         106
-  C:0BBAH         LINE#         109
-  C:0BBCH         LINE#         111
-  C:0BC4H         LINE#         113
-  C:0BD9H         LINE#         116
-  C:0BDCH         LINE#         117
-  C:0BE1H         LINE#         118
-  C:0BE1H         LINE#         120
-  C:0BEDH         LINE#         121
-  C:0BF1H         LINE#         122
-  C:0BF3H         LINE#         123
-  C:0BF6H         LINE#         124
-  C:0BF8H         LINE#         125
-  C:0BF8H         LINE#         126
-  C:0BFAH         LINE#         128
-  C:0BFDH         LINE#         129
+  C:0B82H         LINE#         67
+  C:0B84H         LINE#         68
+  C:0B87H         LINE#         69
+  C:0B89H         LINE#         70
+  C:0B89H         LINE#         71
+  C:0B8BH         LINE#         73
+  C:0B8EH         LINE#         76
+  C:0B9BH         LINE#         79
+  C:0B9DH         LINE#         81
+  C:0BA0H         LINE#         84
+  C:0BA2H         LINE#         86
+  C:0BAAH         LINE#         88
+  C:0BAAH         LINE#         91
+  C:0BADH         LINE#         95
+  C:0BB9H         LINE#         96
+  C:0BBDH         LINE#         97
+  C:0BBFH         LINE#         98
+  C:0BC2H         LINE#         99
+  C:0BC4H         LINE#         100
+  C:0BC4H         LINE#         101
+  C:0BC6H         LINE#         103
+  C:0BC9H         LINE#         106
+  C:0BD6H         LINE#         109
+  C:0BD8H         LINE#         111
+  C:0BDBH         LINE#         114
+  C:0BDDH         LINE#         116
+  C:0BE5H         LINE#         118
+  C:0BE5H         LINE#         121
+  C:0BE8H         LINE#         124
+  C:0BEBH         LINE#         125
+  C:0BF0H         LINE#         128
+  C:0BF3H         LINE#         129
+  C:0BF6H         LINE#         130
+  C:0BF6H         LINE#         132
+  C:0C02H         LINE#         133
+  C:0C06H         LINE#         134
+  C:0C08H         LINE#         135
+  C:0C0BH         LINE#         136
+  C:0C0DH         LINE#         137
+  C:0C0DH         LINE#         138
+  C:0C0FH         LINE#         140
+  C:0C12H         LINE#         141
   -------         ENDPROC       MAIN
   -------         PROC          INICIALIZAR
   -------         DO            
   D:0007H         SYMBOL        vi_carga
   -------         ENDDO         
-  C:0C91H         LINE#         134
-  C:0C91H         LINE#         135
-  C:0C91H         LINE#         139
-  C:0C94H         LINE#         141
-  C:0C96H         LINE#         142
-  C:0C98H         LINE#         143
-  C:0C9AH         LINE#         145
-  C:0C9DH         LINE#         146
-  C:0CA0H         LINE#         148
-  C:0CA2H         LINE#         149
-  C:0CA4H         LINE#         150
-  C:0CA6H         LINE#         153
-  C:0CA8H         LINE#         156
-  C:0CABH         LINE#         159
-  C:0CB0H         LINE#         162
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2023  03:56:54  PAGE 4
+  C:0CC8H         LINE#         146
+  C:0CC8H         LINE#         147
+  C:0CC8H         LINE#         151
+  C:0CCBH         LINE#         153
+  C:0CCDH         LINE#         154
+  C:0CCFH         LINE#         155
+  C:0CD1H         LINE#         157
+  C:0CD4H         LINE#         158
+  C:0CD7H         LINE#         160
+  C:0CD9H         LINE#         161
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  22:55:50  PAGE 4
 
 
-  C:0CB2H         LINE#         163
+  C:0CDBH         LINE#         162
+  C:0CDDH         LINE#         165
+  C:0CDFH         LINE#         168
+  C:0CE2H         LINE#         171
+  C:0CE7H         LINE#         174
+  C:0CE9H         LINE#         175
   -------         ENDPROC       INICIALIZAR
   -------         PROC          _CONVERSIONAD
   D:0007H         SYMBOL        canal
   -------         DO            
   D:0006H         SYMBOL        resultado
   -------         ENDDO         
-  C:0C6AH         LINE#         165
-  C:0C6AH         LINE#         166
-  C:0C6AH         LINE#         172
-  C:0C6DH         LINE#         173
-  C:0C6FH         LINE#         176
-  C:0C72H         LINE#         179
-  C:0C78H         LINE#         182
-  C:0C7BH         LINE#         185
-  C:0C90H         LINE#         187
-  C:0C90H         LINE#         188
+  C:0CA1H         LINE#         177
+  C:0CA1H         LINE#         178
+  C:0CA1H         LINE#         184
+  C:0CA4H         LINE#         185
+  C:0CA6H         LINE#         188
+  C:0CA9H         LINE#         191
+  C:0CAFH         LINE#         194
+  C:0CB2H         LINE#         197
+  C:0CC7H         LINE#         199
+  C:0CC7H         LINE#         200
   -------         ENDPROC       _CONVERSIONAD
+  C:0C15H         SYMBOL        L?0035
+  -------         PROC          L?0034
+  -------         ENDPROC       L?0034
+  C:0C15H         SYMBOL        L?0035
   -------         PROC          CONTROLPANEL
-  C:0C00H         LINE#         190
-  C:0C00H         LINE#         191
-  C:0C00H         LINE#         194
-  C:0C15H         LINE#         195
-  C:0C1EH         LINE#         196
-  C:0C27H         LINE#         197
-  C:0C4BH         LINE#         199
-  C:0C58H         LINE#         200
-  C:0C5AH         LINE#         201
-  C:0C5AH         LINE#         202
-  C:0C67H         LINE#         203
-  C:0C69H         LINE#         204
-  C:0C69H         LINE#         205
-  C:0C69H         LINE#         206
+  -------         DO            
+  D:0013H         SYMBOL        temperatura
+  D:0006H         SYMBOL        resultadoConversion
+  -------         ENDDO         
+  C:0C2AH         LINE#         202
+  C:0C2AH         LINE#         203
+  C:0C2AH         LINE#         209
+  C:0C3FH         LINE#         210
+  C:0C48H         LINE#         211
+  C:0C4DH         LINE#         212
+  C:0C74H         LINE#         214
+  C:0C88H         LINE#         215
+  C:0C8AH         LINE#         216
+  C:0C8AH         LINE#         217
+  C:0C9EH         LINE#         218
+  C:0CA0H         LINE#         219
+  C:0CA0H         LINE#         220
+  C:0CA0H         LINE#         221
   -------         ENDPROC       CONTROLPANEL
   -------         ENDMOD        EXAMEN
 
@@ -226,35 +239,36 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         MODULE        ?C?FPMUL
   C:08F8H         PUBLIC        ?C?FPMUL
   -------         ENDMOD        ?C?FPMUL
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/15/2023  22:55:50  PAGE 5
+
+
+
+  -------         MODULE        ?C?FPCMP
+  C:0A00H         PUBLIC        ?C?FPCMP
+  C:09FEH         PUBLIC        ?C?FPCMP3
+  -------         ENDMOD        ?C?FPCMP
 
   -------         MODULE        ?C?FCAST
-  C:0A08H         PUBLIC        ?C?FCASTC
-  C:0A03H         PUBLIC        ?C?FCASTI
-  C:09FEH         PUBLIC        ?C?FCASTL
+  C:0A81H         PUBLIC        ?C?FCASTC
+  C:0A7CH         PUBLIC        ?C?FCASTI
+  C:0A77H         PUBLIC        ?C?FCASTL
   -------         ENDMOD        ?C?FCAST
 
-  -------         MODULE        ?C?CASTF
-  C:0A3CH         PUBLIC        ?C?CASTF
-  -------         ENDMOD        ?C?CASTF
-
   -------         MODULE        ?C?LNEG
-  C:0ABDH         PUBLIC        ?C?LNEG
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2023  03:56:54  PAGE 5
-
-
+  C:0AFFH         PUBLIC        ?C?LNEG
   -------         ENDMOD        ?C?LNEG
 
   -------         MODULE        ?C?SLCMP
-  C:0ACBH         PUBLIC        ?C?SLCMP
+  C:0B0DH         PUBLIC        ?C?SLCMP
   -------         ENDMOD        ?C?SLCMP
 
   -------         MODULE        ?C?ULCMP
-  C:0AE1H         PUBLIC        ?C?ULCMP
+  C:0B23H         PUBLIC        ?C?ULCMP
   -------         ENDMOD        ?C?ULCMP
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 01C1H BYTE (21%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 01B6H BYTE (21%) *
 ******************************************************************************
 
-Program Size: data=24.0 xdata=0 code=1218
+Program Size: data=24.0 xdata=0 code=1273
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

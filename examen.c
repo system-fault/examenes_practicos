@@ -1,8 +1,9 @@
 #include <reg552.h>
 
-#define BASE_TIEMPO 250
-#define FREQ_OSC    11.0592
-#define DESB_x_SEG  4000
+#define BASE_TIEMPO               250
+#define FREQ_OSC                  11.0592
+#define DESB_x_SEG                4000
+#define CANAL_LECTURA_TEMPERATURA 3
 
 // Declaracion de funciones
 void inicializar(void);
@@ -12,19 +13,17 @@ void controlPanel(void);
 // Variables globales
 char verdeIn, ambarIn, rojoIn;
 unsigned int contador;
-unsigned long int contador10seg;
+unsigned long int contador10seg; // este contador podria desbordar en algun momento haciendolo doble evitas ese posible fallo
 unsigned char TL_1, TH_1;
-int temperatura; // La temperatura tomara valores negativos
-unsigned int resultadoConversion;
 
 // Salidas
-sbit verde = 0x90;
-sbit ambar = 0x91;
-sbit rojo  = 0x92;
-sbit panel = 0x97;
+sbit verde = 0x90; // P1.0
+sbit ambar = 0x91; // P1.1
+sbit rojo  = 0x92; // P1.2
+sbit panel = 0x97; // P1.7
 
 // Entradas
-sbit botoPeaton = 0xC0;
+sbit botoPeaton = 0xC0; // P4.0
 
 void main(void)
 {
@@ -32,7 +31,8 @@ void main(void)
     inicializar();
 
     while (1) {
-        // SECUENCIA VERDE
+
+        // ######## SECUENCIA VERDE ######## //
         while (verdeIn == 1) {
             // Encendemos el verde
             verde = 1;
@@ -46,8 +46,7 @@ void main(void)
             // Aumentamos el contador del panel
             contador10seg++;
 
-            // Controlamos el panel en este punto porque es el timepo mas largo de la secuencia,
-            //  es aqui donde podemos tener solapamientos de timepo
+            // Controlamos el panel
             controlPanel();
 
             // Comprueba si se ha pulsado el boton peaton
@@ -57,6 +56,10 @@ void main(void)
                 verdeIn  = 0;
                 ambarIn  = 1;
                 verde    = 0;
+                /*Recargamos el TR0 para que la siguiente secuencia se complete,
+                si el TR0 no este cargado, no se contaran los segundo correctamente*/
+                TL1 = TL_1;
+                TH1 = TH_1;
             }
             // Comprueba si han pasado 10 segundos/ 1seg 4000
             if (contador == 40000) {
@@ -69,7 +72,7 @@ void main(void)
 
         controlPanel();
 
-        // SECUENCIA AMBAR
+        // ######## SECUENCIA AMBAR ######## //
         while (ambarIn == 1) {
 
             // Encendemos el ambar
@@ -84,6 +87,9 @@ void main(void)
             // Aumentamos el contador del panel
             contador10seg++;
 
+            // Controlamos el panel
+            controlPanel();
+
             // Comprueba si han pasado 2 segundos/ 1seg 4000
             if (contador == 8000) {
                 contador = 0;
@@ -95,7 +101,7 @@ void main(void)
 
         controlPanel();
 
-        // SECUANCIA ROJO
+        // ######## SECUENCIA ROJO ######## //
         while (rojoIn == 1) {
 
             // Encendemos el ambar
@@ -110,9 +116,16 @@ void main(void)
             // Aumentamos el contador del panel
             contador10seg++;
 
+            // Controlamos el panel
+            controlPanel();
+
             // Compruba si el boton se ha pulsado el boton peaton
             if (botoPeaton == 1) {
                 contador = 0; // anade 7seg
+                /*Recargamos el TR0 para que la siguiente secuencia se complete,
+                si el TR0 no este cargado, no se contaran los segundos correctamente*/
+                TL1 = TL_1;
+                TH1 = TH_1;
             }
             // Comprueba si han pasado 7 segundos/ 1seg 4000
             if (contador == 28000) {
@@ -127,8 +140,11 @@ void main(void)
     }
 }
 
+/*################################ FUNCIONES ############################################*/
+
 // Definicion de funciones
 
+// ######INICIALIZAR######//
 void inicializar(void)
 {
     // Variables locales
@@ -136,7 +152,7 @@ void inicializar(void)
     // Configuracion del timer 1 modo 2 (10) temporizador 8 bits con auto recarga
     TMOD = 0x20;
     // Calculo de carga inicial del timer 1
-    vi_carga = (0xFF - 1) - BASE_TIEMPO * FREQ_OSC / 12.0;
+    vi_carga = (0xFF + 1) - BASE_TIEMPO * FREQ_OSC / 12.0;
     TL_1     = vi_carga;
     TH_1     = vi_carga;
     // Una vez disparado el timer no hace falta volver a recargarlo
@@ -159,7 +175,9 @@ void inicializar(void)
     // Apagamos el panel
     panel = 0;
 }
+/*#######################################################################################*/
 
+// ###### CONVERSION ANALOGICO DIGITAL ######//
 unsigned int conversionAD(unsigned char canal)
 {
 
@@ -185,13 +203,19 @@ unsigned int conversionAD(unsigned char canal)
     return (resultado);
 }
 
+/*############################################################################################*/
+
+// ###### CONTROL DEL PANEL DE TEMPERATURA ######//
 void controlPanel(void)
 {
+    // Variables locales
+    float temperatura; // La temperatura tomara valores negativos
+    unsigned int resultadoConversion;
 
     // Comprobamos si han pasado 10 segundos
     if (contador10seg >= 40000) {
         contador10seg       = 0;
-        resultadoConversion = conversionAD(3);
+        resultadoConversion = conversionAD(CANAL_LECTURA_TEMPERATURA);
         temperatura         = ((70.0 / 1023) * resultadoConversion - 20.0);
         // Modifica el panel
         if (temperatura < 15) {
