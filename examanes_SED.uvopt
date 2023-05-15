@@ -137,16 +137,16 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDP51</Key>
-          <Name>(98=903,10,1246,304,0)(82=660,181,868,296,0)(83=675,185,883,300,1)(84=-1,-1,-1,-1,0)(85=452,67,660,182,0)(5009=676,76,884,191,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=705,345,915,620,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=747,310,973,655,0)</Name>
+          <Name>(98=903,10,1246,304,0)(82=660,181,868,296,0)(83=672,276,880,391,1)(84=-1,-1,-1,-1,0)(85=452,67,660,182,0)(5009=676,76,884,191,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=934,182,1144,457,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=747,310,973,655,0)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>148</LineNumber>
+          <LineNumber>153</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16774995</Address>
+          <Address>-16775001</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -160,9 +160,25 @@
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>143</LineNumber>
+          <LineNumber>161</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16775034</Address>
+          <Address>-16774956</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>EXAMEN.C</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>148</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>-16775040</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -208,7 +224,7 @@
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>desboradamientos</ItemText>
+          <ItemText>desbordamientos,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
