@@ -55,7 +55,7 @@ void main(void)
         if (marcha && !DISPARADO) {
 
             TR0       = 1;
-            DISPARADO = 1;
+            DISPARADO = 1;  // PUNTO UNICO EN QUE SE PONE A 1 LA VARIABLE // 
 
             // Si tenemos el modo 16 bits activado carga valores iniciales
             if (modo == 1) {
@@ -90,6 +90,7 @@ void inicio(void)
         TL0 = TL_0;
         TH0 = TH_0;
 
+        //Desbordamientos por segundo en modo 2
         desbordamientos = 4000;
     }
 
@@ -109,6 +110,7 @@ void inicio(void)
         TL0 = TL_0;
         TH0 = TH_0;
 
+        //Desbordamientos por segundo en modo 1
         desbordamientos = 20;
     }
 
