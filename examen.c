@@ -1,186 +1,180 @@
 #include <reg552.h>
 
-#define BASE_DE_TIEMPO_MODO_1 50000
-#define BASE_DE_TIEMPO_MODO_2 250
-#define FREQ_OCS              11.0592
+#define BASE_TIEMPO_MODO_2 250     // Base de tiempo para el modo 8 bits con auto recarga
+#define BASE_TIEMPO_MODO_1 50000   // Base de tiempo para el modo 16 bits
+#define FREQ               11.0592 // Frecuencia del oscilador
 
 // Declaracion de funciones
-void inicializar(void);
+void inicio(void); // Funcion de inicializacion, en esta fase se hace la seleccion de modo
 
-// Salidas P4
-// Cohetes
-sbit cohete1 = 0xC0;
-sbit cohete2 = 0xC1;
-sbit cohete3 = 0xC2;
-// Seguridad
-sbit guillotina = 0xC7;
+unsigned int contador;        // Contador para controlar los flags up del TR0
+unsigned char TH_0, TL_0;     // Variables para almacenar la carga inicial de TL0 y TH0
+unsigned int desbordamientos; // Desbordamientos por segundo
+char modo;                    // Variable para seleccion de modo
+char DISPARADO;               // Variable de control de sistema disparado
 
-// Entradas P1
-sbit disparo       = 0x90;
-sbit seleccionModo = 0x91;
-sbit EMERGENCIA    = 0x97;
+sbit marcha     = 0x90; // Disparo de la secuenciade lanzamiento
+sbit botonModo  = 0x91; // Boton selleccion modo
+sbit EMERGENCIA = 0x97; // Seta de emergencia
 
-// Variables globales
-unsigned long int contador;
-unsigned char TL_0, TH_0;
-unsigned char DISPARADO;
-// unsigned char MODO; // MODO = 0 (MODO 1 16 bits) ; MODO = 1 (MODO 2 8 bit con autorecarga)
-unsigned long int desbordamientos;
+sbit cohete1    = 0xC0; // Disparador cohete 1 tronco
+sbit cohete2    = 0xC1; // Disparador cohete 2 hojas
+sbit cohete3    = 0xC2; // Disparador cohete 3 sol
+sbit guillotina = 0xC7; // Guillotina para cortar mechas en caso de emergencia
 
+
+//Funcion principal
 void main(void)
 {
 
-    // Inicializa
-    inicializar();
+    inicio(); // Llamada a la funcion de inicio
 
+	//Bucle infinito
     while (1) {
 
-        while ((disparo == 0) && (DISPARADO == 0) && (EMERGENCIA == 0)) {
-
-            // TR0 apagado
-            TR0 = 0;
-            // Todas las salidas a cero listas
+        // Mientras marcha, emergencia y disparado a cero, se espera y mantienen las variables inicializadas
+        // Tambien se ponen a cero todas la salidas
+        while ((!marcha) && (!EMERGENCIA) && (!DISPARADO)) {
+            TR0        = 0;
+            TL0        = TL_0;
+            TH0        = TH_0;
             cohete1    = 0;
             cohete2    = 0;
             cohete3    = 0;
             guillotina = 0;
-            // contador para el ciclo lo mantenemos en cero
-            contador = 0;
-            // Si tenemos MODO 1 mantenemos recargado el TR0
-            /*if (MODO == 0;){
-            TL0 = TL_0;
-            TH0 = TH_0;
-            }*/
+            contador   = 0;
+            DISPARADO  = 0;
+            // Si tenemos el modo 16 bits activado carga valores iniciales
+            if (modo == 1) {
+                TL0 = TL_0;
+                TH0 = TH_0;
+            }
         }
-        
-        if (disparo && !EMERGENCIA && !DISPARADO) {
-            // TR0 encendido
-            TR0 = 1;
-            // Activamos en control de disparo
+
+        // Si marcha esta ON y no esta el sistema disparado entra y comienza la secuencia
+        if (marcha && !DISPARADO) {
+
+            TR0       = 1;
             DISPARADO = 1;
+
+            // Si tenemos el modo 16 bits activado carga valores iniciales
+            if (modo == 1) {
+                TL0 = TL_0;
+                TH0 = TH_0;
+            }
         }
     }
 }
 
-/*################# FUNCIONES ######################*/
+/*############ FUNCIONES ############*/
 
-// CONFIGURACION//
-
-void inicializar(void)
+// INICIO//Configuracion inicial
+void inicio(void)
 {
+    // Variable modo toma el valor de la entrada de modo
+    modo = botonModo;
 
-    // Variables locales
-    unsigned int valor_carga_inical;
+    // Si seleccionamos el modo 2 8 bits con autorecarga
+    if (modo == 0) {
 
-    // Seleccion de modo por defecto MODO1
-    // MODO = seleccionModo;
+        // Varible para almacenar valores iniciales del timer
+        unsigned char vi;
+        // Configuramos TMOD
+        TMOD = 0x02;
+        // Calculamos valores iniciales
+        vi = (0xFF + 1) - BASE_TIEMPO_MODO_2 * FREQ / 12.0;
 
-    /*
-    ################ MODO 1 ###############33
-    if (MODO == 0) {
-        // Configuracion timer 0  modo 2 (10) 16bits
-        TMOD = TMOD | 0x01;
+        TL_0 = vi; // Cargamos vi
+        TH_0 = vi; // En el modo 2 TH toma el valor de TL para poder recargar automaticamente
+                   // Carga en SFR
+        TL0 = TL_0;
+        TH0 = TH_0;
 
-        // Calculo y carga del temporizador
-        valor_carga_inical = (0xFFFF + 1) - BASE_DE_TIEMPO_MODO_1 * FREQ_OCS / 12.0;
-        TL_0               = valor_carga_inical;
-        TH_0               = valor_carga_inical >> 8;
-        TL0                = TL_0;
-        TH0                = TH_0;
-
-        // Se fijan unos los desbordamientos por segundo
-        DESB_x_SEG = 20;
+        desbordamientos = 4000;
     }
 
-    */
-    /*################ MODO 2 ###############33*/
-    // if (MODO == 1) {
-    //  Configuracion timer 0  modo 2 (10) 8bits con autorecarga
-    TMOD = TMOD | 0x02;
+    // Si seleccionamos el modo 1 16 bits
+    if (modo == 1) {
 
-    // Calculo y carga del temporizador
-    valor_carga_inical = (0xFF + 1) - BASE_DE_TIEMPO_MODO_2 * FREQ_OCS / 12.0;
-    TL_0               = valor_carga_inical;
-    TH_0               = valor_carga_inical;
-    TL0                = TL_0;
-    TH0                = TH_0;
+        // Varible para almacenar valores iniciales del timer
+        unsigned int vi;
+        // Configuramos TMOD
+        TMOD = 0x01;
+        // Calculamos valores iniciales
+        vi = (0xFFFF + 1) - BASE_TIEMPO_MODO_1 * FREQ / 12.0;
 
-    // Se fijan unos los desbordamientos por segundo
-    desbordamientos = 4000;
-    // }
-    // Interruciones
-    EA  = 1; // Interrpciones globales
-    ET0 = 1; // Interrupcion timer0
+        TL_0 = vi;      // Cargamos vi en TL
+        TH_0 = vi >> 8; // En el modo 16 bits despalzamos la variable vi 8 posiciones y lo asignamos TH0
+                        // Carga en SFR
+        TL0 = TL_0;
+        TH0 = TH_0;
 
-    // Salidas a cero por seguridad
+        desbordamientos = 20;
+    }
+
+    EA  = 1;
+    ET0 = 1;
+
     cohete1    = 0;
     cohete2    = 0;
     cohete3    = 0;
     guillotina = 0;
 }
-////////////////////////////////////////////////////////////////////////////////
 
-// INTERRUPCION TR0//
-
-void interrupcionTR0(void) interrupt 1 using 3
+// INTERRUPCION//Interrupcion del TR0
+void interrupcionTR0(void) interrupt 1 using 1
 {
+    // Sumamos un desbordamiento
+    contador++;
 
-    // Variables locales
-
-    // Si estamos en MODO 1 recargamos el TR0
-    // if (MODO == 0) {
-    //    TL0 = TL_0;
-    //    TH0 = TH_0;
-    // }
-
-    // Sumamos un desbrodamiento SI ESTAMOS EN MARCHA
-        contador++;
-    
-
-    if ((contador > 0) && (contador < (5 * desbordamientos)) && (EMERGENCIA == 0)) {
-        // Disparamos el primer choete
-        cohete1   = 1;
-        DISPARADO = 1;
+    // Si tenemos el modo 16 bits activado carga valores iniciales
+    if (modo == 1) {
+        TL0 = TL_0;
+        TH0 = TH_0;
     }
 
+    // Si ha comenzado la secuencia en la primera pasada por la interrupcion lanza el primer cohete
+    if ((contador == (1)) && (EMERGENCIA == 0)) {
+        cohete1 = 1;
+    }
+
+    // En el segundo 5 lanzamos el segundo cohete
     if (contador == (5 * desbordamientos) && (EMERGENCIA == 0)) {
-        cohete2   = 1;
-        DISPARADO = 1;
+        cohete2 = 1;
     }
 
+    // En el segundo 8 lanzamos el sol
     if (contador == (8 * desbordamientos) && (EMERGENCIA == 0)) {
-        cohete3   = 1;
-        DISPARADO = 1;
+        cohete3 = 1;
     }
 
+    // En el segundo 12 reiniciamos el sistema y que preparado para un nuevo lanzamiento si no hay emergencia
     if (contador == (12 * desbordamientos) && (EMERGENCIA == 0)) {
         cohete1   = 0;
         cohete2   = 0;
         cohete3   = 0;
-        DISPARADO = 0;
         contador  = 0;
+        DISPARADO = 0;
     }
 
+    // Si se activa la señal de emergencia
     if (EMERGENCIA == 1) {
 
-        // Corte de mechas
-        guillotina = 1;
+        guillotina = 1; // Activa la guillotina
+        cohete1    = 0; // Se detiene el lanzador 1
+        cohete2    = 0; // Se detiene el lanzador 2
+        cohete3    = 0; // Se detiene el lanzador 3
+        contador   = 0; // Se reinicia el contador
+        DISPARADO  = 0; // Se resetea la variable para poder volver a lanzar
 
-        // Desactivacion pines de disparo
-        cohete1 = 0;
-        cohete2 = 0;
-        cohete3 = 0;
-
-        while (EMERGENCIA == 1) {
-            // mientras se espera el reset de emergencia se inicializan los parameetros necesarios para volver al modo espera
-            DISPARADO  = 0;
-            contador   = 0;
-            guillotina = 0;
-            // Si tenemos MODO 1 mantenemos recargado el TR0
-            /*if (MODO == 0;){
-            TL0 = TL_0;
-            TH0 = TH_0;
-            }*/
+        // Mientras no se desconecte la señal de emergencia no saldra por seguridad de este bucle
+        while (EMERGENCIA) {
+            guillotina = 0; // Desconecta la guillotina de las mechas
+            // Si tenemos el modo 16 bits activado carga valores iniciales
+            if (modo == 1) {
+                TL0 = TL_0;
+                TH0 = TH_0;
+            }
         }
     }
 }
