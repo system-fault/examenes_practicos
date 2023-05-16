@@ -144,50 +144,50 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>153</LineNumber>
+          <LineNumber>168</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16775001</Address>
+          <Address>-16775013</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\David\Desktop\examenes_practicos\EXAMEN.C</Filename>
+          <Filename>EXAMEN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\EXAMEN\153</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>161</LineNumber>
+          <LineNumber>138</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16774956</Address>
+          <Address>-16775121</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\David\Desktop\examenes_practicos\EXAMEN.C</Filename>
+          <Filename>EXAMEN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\EXAMEN\161</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>148</LineNumber>
+          <LineNumber>157</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16775040</Address>
+          <Address>-16775032</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\David\Desktop\examenes_practicos\EXAMEN.C</Filename>
+          <Filename>EXAMEN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\EXAMEN\148</Expression>
+          <Expression></Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

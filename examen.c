@@ -139,17 +139,17 @@ void interrupcionTR0(void) interrupt 1 using 1
     }
 
     // En el segundo 5 lanzamos el segundo cohete
-    if (contador == (5 * desbordamientos) && (EMERGENCIA == 0)) {
+    if (contador == (5 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
         cohete2 = 1;
     }
 
     // En el segundo 8 lanzamos el sol
-    if (contador == (8 * desbordamientos) && (EMERGENCIA == 0)) {
+    if (contador == (8 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
         cohete3 = 1;
     }
 
     // En el segundo 12 reiniciamos el sistema y que preparado para un nuevo lanzamiento si no hay emergencia
-    if (contador == (12 * desbordamientos) && (EMERGENCIA == 0)) {
+    if (contador == (12 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
         cohete1   = 0;
         cohete2   = 0;
         cohete3   = 0;

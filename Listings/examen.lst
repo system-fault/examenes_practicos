@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 00:45:55 PAGE 1   
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 19:48:01 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
@@ -10,205 +10,200 @@ line level    source
 
    1          #include <reg552.h>
    2          
-   3          #define BASE_DE_TIEMPO_MODO_1 50000
-   4          #define BASE_DE_TIEMPO_MODO_2 250
-   5          #define FREQ_OCS              11.0592
+   3          #define BASE_TIEMPO_MODO_2 250     // Base de tiempo para el modo 8 bits con auto recarga
+   4          #define BASE_TIEMPO_MODO_1 50000   // Base de tiempo para el modo 16 bits
+   5          #define FREQ               11.0592 // Frecuencia del oscilador
    6          
    7          // Declaracion de funciones
-   8          void inicializar(void);
+   8          void inicio(void); // Funcion de inicializacion, en esta fase se hace la seleccion de modo
    9          
-  10          // Salidas P4
-  11          // Cohetes
-  12          sbit cohete1 = 0xC0;
-  13          sbit cohete2 = 0xC1;
-  14          sbit cohete3 = 0xC2;
-  15          // Seguridad
-  16          sbit guillotina = 0xC7;
-  17          
-  18          // Entradas P1
-  19          sbit disparo       = 0x90;
-  20          sbit seleccionModo = 0x91;
-  21          sbit EMERGENCIA    = 0x97;
-  22          
-  23          // Variables globales
-  24          unsigned long int contador;
-  25          unsigned char TL_0, TH_0;
-  26          unsigned char DISPARADO;
-  27          // unsigned char MODO; // MODO = 0 (MODO 1 16 bits) ; MODO = 1 (MODO 2 8 bit con autorecarga)
-  28          unsigned long int desbordamientos;
-  29          
-  30          void main(void)
-  31          {
-  32   1      
-  33   1          // Inicializa
-  34   1          inicializar();
-  35   1      
-  36   1          while (1) {
-  37   2      
-  38   2              while ((disparo == 0) && (DISPARADO == 0) && (EMERGENCIA == 0)) {
-  39   3      
-  40   3                  // TR0 apagado
-  41   3                  TR0 = 0;
-  42   3                  // Todas las salidas a cero listas
-  43   3                  cohete1    = 0;
-  44   3                  cohete2    = 0;
-  45   3                  cohete3    = 0;
-  46   3                  guillotina = 0;
-  47   3                  // contador para el ciclo lo mantenemos en cero
-  48   3                  contador = 0;
-  49   3                  // Si tenemos MODO 1 mantenemos recargado el TR0
-  50   3                  /*if (MODO == 0;){
-  51   3                  TL0 = TL_0;
-  52   3                  TH0 = TH_0;
-  53   3                  }*/
-  54   3              }
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 00:45:55 PAGE 2   
+  10          unsigned int contador;        // Contador para controlar los flags up del TR0
+  11          unsigned char TH_0, TL_0;     // Variables para almacenar la carga inicial de TL0 y TH0
+  12          unsigned int desbordamientos; // Desbordamientos por segundo
+  13          char modo;                    // Variable para seleccion de modo
+  14          char DISPARADO;               // Variable de control de sistema disparado
+  15          
+  16          sbit marcha     = 0x90; // Disparo de la secuenciade lanzamiento
+  17          sbit botonModo  = 0x91; // Boton selleccion modo
+  18          sbit EMERGENCIA = 0x97; // Seta de emergencia
+  19          
+  20          sbit cohete1    = 0xC0; // Disparador cohete 1 tronco
+  21          sbit cohete2    = 0xC1; // Disparador cohete 2 hojas
+  22          sbit cohete3    = 0xC2; // Disparador cohete 3 sol
+  23          sbit guillotina = 0xC7; // Guillotina para cortar mechas en caso de emergencia
+  24          
+  25          
+  26          //Funcion principal
+  27          void main(void)
+  28          {
+  29   1      
+  30   1          inicio(); // Llamada a la funcion de inicio
+  31   1      
+  32   1        //Bucle infinito
+  33   1          while (1) {
+  34   2      
+  35   2              // Mientras marcha, emergencia y disparado a cero, se espera y mantienen las variables inicializad
+             -as
+  36   2              // Tambien se ponen a cero todas la salidas
+  37   2              while ((!marcha) && (!EMERGENCIA) && (!DISPARADO)) {
+  38   3                  TR0        = 0;
+  39   3                  TL0        = TL_0;
+  40   3                  TH0        = TH_0;
+  41   3                  cohete1    = 0;
+  42   3                  cohete2    = 0;
+  43   3                  cohete3    = 0;
+  44   3                  guillotina = 0;
+  45   3                  contador   = 0;
+  46   3                  DISPARADO  = 0;
+  47   3                  // Si tenemos el modo 16 bits activado carga valores iniciales
+  48   3                  if (modo == 1) {
+  49   4                      TL0 = TL_0;
+  50   4                      TH0 = TH_0;
+  51   4                  }
+  52   3              }
+  53   2      
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 19:48:01 PAGE 2   
 
-  55   2              
-  56   2              if (disparo && !EMERGENCIA && !DISPARADO) {
-  57   3                  // TR0 encendido
-  58   3                  TR0 = 1;
-  59   3                  // Activamos en control de disparo
-  60   3                  DISPARADO = 1;
-  61   3              }
-  62   2          }
-  63   1      }
-  64          
-  65          /*################# FUNCIONES ######################*/
-  66          
-  67          // CONFIGURACION//
+  54   2              // Si marcha esta ON y no esta el sistema disparado entra y comienza la secuencia
+  55   2              if (marcha && !DISPARADO) {
+  56   3      
+  57   3                  TR0       = 1;
+  58   3                  DISPARADO = 1;
+  59   3      
+  60   3                  // Si tenemos el modo 16 bits activado carga valores iniciales
+  61   3                  if (modo == 1) {
+  62   4                      TL0 = TL_0;
+  63   4                      TH0 = TH_0;
+  64   4                  }
+  65   3              }
+  66   2          }
+  67   1      }
   68          
-  69          void inicializar(void)
-  70          {
-  71   1      
-  72   1          // Variables locales
-  73   1          unsigned int valor_carga_inical;
-  74   1      
-  75   1          // Seleccion de modo por defecto MODO1
-  76   1          // MODO = seleccionModo;
-  77   1      
-  78   1          /*
-  79   1          ################ MODO 1 ###############33
-  80   1          if (MODO == 0) {
-  81   1              // Configuracion timer 0  modo 2 (10) 16bits
-  82   1              TMOD = TMOD | 0x01;
-  83   1      
-  84   1              // Calculo y carga del temporizador
-  85   1              valor_carga_inical = (0xFFFF + 1) - BASE_DE_TIEMPO_MODO_1 * FREQ_OCS / 12.0;
-  86   1              TL_0               = valor_carga_inical;
-  87   1              TH_0               = valor_carga_inical >> 8;
-  88   1              TL0                = TL_0;
-  89   1              TH0                = TH_0;
-  90   1      
-  91   1              // Se fijan unos los desbordamientos por segundo
-  92   1              DESB_x_SEG = 20;
-  93   1          }
-  94   1      
-  95   1          */
-  96   1          /*################ MODO 2 ###############33*/
-  97   1          // if (MODO == 1) {
-  98   1          //  Configuracion timer 0  modo 2 (10) 8bits con autorecarga
-  99   1          TMOD = TMOD | 0x02;
- 100   1      
- 101   1          // Calculo y carga del temporizador
- 102   1          valor_carga_inical = (0xFF + 1) - BASE_DE_TIEMPO_MODO_2 * FREQ_OCS / 12.0;
- 103   1          TL_0               = valor_carga_inical;
- 104   1          TH_0               = valor_carga_inical;
- 105   1          TL0                = TL_0;
- 106   1          TH0                = TH_0;
- 107   1      
- 108   1          // Se fijan unos los desbordamientos por segundo
- 109   1          desbordamientos = 4000;
- 110   1          // }
- 111   1          // Interruciones
- 112   1          EA  = 1; // Interrpciones globales
- 113   1          ET0 = 1; // Interrupcion timer0
+  69          /*############ FUNCIONES ############*/
+  70          
+  71          // INICIO//Configuracion inicial
+  72          void inicio(void)
+  73          {
+  74   1          // Variable modo toma el valor de la entrada de modo
+  75   1          modo = botonModo;
+  76   1      
+  77   1          // Si seleccionamos el modo 2 8 bits con autorecarga
+  78   1          if (modo == 0) {
+  79   2      
+  80   2              // Varible para almacenar valores iniciales del timer
+  81   2              unsigned char vi;
+  82   2              // Configuramos TMOD
+  83   2              TMOD = 0x02;
+  84   2              // Calculamos valores iniciales
+  85   2              vi = (0xFF + 1) - BASE_TIEMPO_MODO_2 * FREQ / 12.0;
+  86   2      
+  87   2              TL_0 = vi; // Cargamos vi
+  88   2              TH_0 = vi; // En el modo 2 TH toma el valor de TL para poder recargar automaticamente
+  89   2                         // Carga en SFR
+  90   2              TL0 = TL_0;
+  91   2              TH0 = TH_0;
+  92   2      
+  93   2              desbordamientos = 4000;
+  94   2          }
+  95   1      
+  96   1          // Si seleccionamos el modo 1 16 bits
+  97   1          if (modo == 1) {
+  98   2      
+  99   2              // Varible para almacenar valores iniciales del timer
+ 100   2              unsigned int vi;
+ 101   2              // Configuramos TMOD
+ 102   2              TMOD = 0x01;
+ 103   2              // Calculamos valores iniciales
+ 104   2              vi = (0xFFFF + 1) - BASE_TIEMPO_MODO_1 * FREQ / 12.0;
+ 105   2      
+ 106   2              TL_0 = vi;      // Cargamos vi en TL
+ 107   2              TH_0 = vi >> 8; // En el modo 16 bits despalzamos la variable vi 8 posiciones y lo asignamos TH0
+ 108   2                              // Carga en SFR
+ 109   2              TL0 = TL_0;
+ 110   2              TH0 = TH_0;
+ 111   2      
+ 112   2              desbordamientos = 20;
+ 113   2          }
  114   1      
- 115   1          // Salidas a cero por seguridad
- 116   1          cohete1    = 0;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 00:45:55 PAGE 3   
+ 115   1          EA  = 1;
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 19:48:01 PAGE 3   
 
- 117   1          cohete2    = 0;
- 118   1          cohete3    = 0;
- 119   1          guillotina = 0;
- 120   1      }
- 121          ////////////////////////////////////////////////////////////////////////////////
- 122          
- 123          // INTERRUPCION TR0//
- 124          
- 125          void interrupcionTR0(void) interrupt 1 using 3
+ 116   1          ET0 = 1;
+ 117   1      
+ 118   1          cohete1    = 0;
+ 119   1          cohete2    = 0;
+ 120   1          cohete3    = 0;
+ 121   1          guillotina = 0;
+ 122   1      }
+ 123          
+ 124          // INTERRUPCION//Interrupcion del TR0
+ 125          void interrupcionTR0(void) interrupt 1 using 1
  126          {
- 127   1      
- 128   1          // Variables locales
+ 127   1          // Sumamos un desbordamiento
+ 128   1          contador++;
  129   1      
- 130   1          // Si estamos en MODO 1 recargamos el TR0
- 131   1          // if (MODO == 0) {
- 132   1          //    TL0 = TL_0;
- 133   1          //    TH0 = TH_0;
- 134   1          // }
+ 130   1          // Si tenemos el modo 16 bits activado carga valores iniciales
+ 131   1          if (modo == 1) {
+ 132   2              TL0 = TL_0;
+ 133   2              TH0 = TH_0;
+ 134   2          }
  135   1      
- 136   1          // Sumamos un desbrodamiento SI ESTAMOS EN MARCHA
- 137   1              contador++;
- 138   1          
- 139   1      
- 140   1          if ((contador > 0) && (contador < (5 * desbordamientos)) && (EMERGENCIA == 0)) {
- 141   2              // Disparamos el primer choete
- 142   2              cohete1   = 1;
- 143   2              DISPARADO = 1;
+ 136   1          // Si ha comenzado la secuencia en la primera pasada por la interrupcion lanza el primer cohete
+ 137   1          if ((contador == (1)) && (EMERGENCIA == 0)) {
+ 138   2              cohete1 = 1;
+ 139   2          }
+ 140   1      
+ 141   1          // En el segundo 5 lanzamos el segundo cohete
+ 142   1          if (contador == (5 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
+ 143   2              cohete2 = 1;
  144   2          }
  145   1      
- 146   1          if (contador == (5 * desbordamientos) && (EMERGENCIA == 0)) {
- 147   2              cohete2   = 1;
- 148   2              DISPARADO = 1;
+ 146   1          // En el segundo 8 lanzamos el sol
+ 147   1          if (contador == (8 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
+ 148   2              cohete3 = 1;
  149   2          }
  150   1      
- 151   1          if (contador == (8 * desbordamientos) && (EMERGENCIA == 0)) {
- 152   2              cohete3   = 1;
- 153   2              DISPARADO = 1;
- 154   2          }
- 155   1      
- 156   1          if (contador == (12 * desbordamientos) && (EMERGENCIA == 0)) {
- 157   2              cohete1   = 0;
- 158   2              cohete2   = 0;
- 159   2              cohete3   = 0;
- 160   2              DISPARADO = 0;
- 161   2              contador  = 0;
- 162   2          }
- 163   1      
- 164   1          if (EMERGENCIA == 1) {
- 165   2      
- 166   2              // Corte de mechas
- 167   2              guillotina = 1;
- 168   2      
- 169   2              // Desactivacion pines de disparo
- 170   2              cohete1 = 0;
- 171   2              cohete2 = 0;
- 172   2              cohete3 = 0;
- 173   2      
- 174   2              while (EMERGENCIA == 1) {
- 175   3                  // mientras se espera el reset de emergencia se inicializan los parameetros necesarios para vo
-             -lver al modo espera
- 176   3                  DISPARADO  = 0;
- 177   3                  contador   = 0;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 00:45:55 PAGE 4   
+ 151   1          // En el segundo 12 reiniciamos el sistema y que preparado para un nuevo lanzamiento si no hay emergen
+             -cia
+ 152   1          if (contador == (12 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
+ 153   2              cohete1   = 0;
+ 154   2              cohete2   = 0;
+ 155   2              cohete3   = 0;
+ 156   2              contador  = 0;
+ 157   2              DISPARADO = 0;
+ 158   2          }
+ 159   1      
+ 160   1          // Si se activa la señal de emergencia
+ 161   1          if (EMERGENCIA == 1) {
+ 162   2      
+ 163   2              guillotina = 1; // Activa la guillotina
+ 164   2              cohete1    = 0; // Se detiene el lanzador 1
+ 165   2              cohete2    = 0; // Se detiene el lanzador 2
+ 166   2              cohete3    = 0; // Se detiene el lanzador 3
+ 167   2              contador   = 0; // Se reinicia el contador
+ 168   2              DISPARADO  = 0; // Se resetea la variable para poder volver a lanzar
+ 169   2      
+ 170   2              // Mientras no se desconecte la señal de emergencia no saldra por seguridad de este bucle
+ 171   2              while (EMERGENCIA) {
+ 172   3                  guillotina = 0; // Desconecta la guillotina de las mechas
+ 173   3                  // Si tenemos el modo 16 bits activado carga valores iniciales
+ 174   3                  if (modo == 1) {
+ 175   4                      TL0 = TL_0;
+ 176   4                      TH0 = TH_0;
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/16/2023 19:48:01 PAGE 4   
 
- 178   3                  guillotina = 0;
- 179   3                  // Si tenemos MODO 1 mantenemos recargado el TR0
- 180   3                  /*if (MODO == 0;){
- 181   3                  TL0 = TL_0;
- 182   3                  TH0 = TH_0;
- 183   3                  }*/
- 184   3              }
- 185   2          }
- 186   1      }
+ 177   4                  }
+ 178   3              }
+ 179   2          }
+ 180   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    353    ----
+   CODE SIZE        =    403    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     11    ----
+   DATA SIZE        =      8       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
