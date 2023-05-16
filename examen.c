@@ -22,14 +22,13 @@ sbit cohete2    = 0xC1; // Disparador cohete 2 hojas
 sbit cohete3    = 0xC2; // Disparador cohete 3 sol
 sbit guillotina = 0xC7; // Guillotina para cortar mechas en caso de emergencia
 
-
-//Funcion principal
+// Funcion principal
 void main(void)
 {
 
     inicio(); // Llamada a la funcion de inicio
 
-	//Bucle infinito
+    // Bucle infinito
     while (1) {
 
         // Mientras marcha, emergencia y disparado a cero, se espera y mantienen las variables inicializadas
@@ -55,7 +54,7 @@ void main(void)
         if (marcha && !DISPARADO) {
 
             TR0       = 1;
-            DISPARADO = 1;  // PUNTO UNICO EN QUE SE PONE A 1 LA VARIABLE // 
+            DISPARADO = 1; // PUNTO UNICO EN QUE SE PONE A 1 LA VARIABLE //
 
             // Si tenemos el modo 16 bits activado carga valores iniciales
             if (modo == 1) {
@@ -90,7 +89,7 @@ void inicio(void)
         TL0 = TL_0;
         TH0 = TH_0;
 
-        //Desbordamientos por segundo en modo 2
+        // Desbordamientos por segundo en modo 2
         desbordamientos = 4000;
     }
 
@@ -110,13 +109,15 @@ void inicio(void)
         TL0 = TL_0;
         TH0 = TH_0;
 
-        //Desbordamientos por segundo en modo 1
+        // Desbordamientos por segundo en modo 1
         desbordamientos = 20;
     }
 
+    // Habilitacion de la interrupciones globales y TR0
     EA  = 1;
     ET0 = 1;
 
+    // Se ponen a cero todas la salidas
     cohete1    = 0;
     cohete2    = 0;
     cohete3    = 0;
@@ -141,17 +142,17 @@ void interrupcionTR0(void) interrupt 1 using 1
     }
 
     // En el segundo 5 lanzamos el segundo cohete
-    if (contador == (5 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
+    if (contador == (5 * desbordamientos) && (EMERGENCIA == 0) && (DISPARADO == 1)) {
         cohete2 = 1;
     }
 
     // En el segundo 8 lanzamos el sol
-    if (contador == (8 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
+    if (contador == (8 * desbordamientos) && (EMERGENCIA == 0) && (DISPARADO == 1)) {
         cohete3 = 1;
     }
 
     // En el segundo 12 reiniciamos el sistema y que preparado para un nuevo lanzamiento si no hay emergencia
-    if (contador == (12 * desbordamientos) && (EMERGENCIA == 0)&&(DISPARADO == 1)) {
+    if (contador == (12 * desbordamientos) && (EMERGENCIA == 0) && (DISPARADO == 1)) {
         cohete1   = 0;
         cohete2   = 0;
         cohete3   = 0;
