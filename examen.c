@@ -12,9 +12,9 @@ unsigned int conversionAD(unsigned char);
 sbit marcha = 0x80;
 
 // Salidas
-sbit tapaComida        = 0x90;
-sbit circutoCalentador = 0x91;
-sbit luz               = 0x97;
+sbit tapaComida        = 0x90; //Control  tapa comida
+sbit circutoCalentador = 0x91; //Control circuito calentadorr
+sbit luz               = 0x97; //Control luz acuario
 
 // Bombas
 // Entradas
@@ -86,7 +86,7 @@ void inicializar(void)
     EA  = 1; // habilita interrupciones globales
     ET0 = 1; // habilita la interrupcion timer0
 
-    // SAlidas
+    // Salidas
     tapaComida        = 0;
     luz               = 0;
     circutoCalentador = 0;
