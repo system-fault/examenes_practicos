@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/13/2023 00:31:22 PAGE 1   
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/18/2023 09:49:10 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
@@ -8,140 +8,94 @@ COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE examen.c OPTIMIZE(8,SPEED) BROWS
 
 line level    source
 
-   1          #include <reg552.h>
+   1          #include <REG552.H>
    2          
-   3          #define BASE_DE_TIEMPO 50000
-   4          #define FREQ_OSCI      11.0592
-   5          
-   6          // Declaracion de funciones
-   7          
-   8          void inicialicizar(void);
-   9          unsigned int conversionAD(unsigned char canal);
+   3          #define BaseTiempo               50000
+   4          #define FrecOsc                  11.0592
+   5          #define DesbordamientosPorSegudo 20
+   6          
+   7          // variables globales
+   8          unsigned char TL_0, TH_0;
+   9          unsigned char contador;
   10          
-  11          // Variables globales
-  12          unsigned char TL_carga, TH_carga;
-  13          
-  14          sbit marcha = 0xC0;
+  11          // entradas
+  12          sbit marcha = 0x90;
+  13          sbit S1     = 0x91;
+  14          sbit S2     = 0x92;
   15          
-  16          void main(void)
-  17          {
-  18   1          inicialicizar();
-  19   1      
-  20   1          while (1) {
-  21   2              while (marcha == 0)
-  22   2                  ;
-  23   2          }
-  24   1      }
-  25          
-  26          // Definicion de funciones
-  27          
-  28          void inicialicizar(void)
-  29          {
-  30   1      
-  31   1          // Variables locales
-  32   1          unsigned int vi_inicial;
-  33   1      
-  34   1          // Configuramos el TR en modo 01 16bit modo timer T MODO TMOD!!!!
-  35   1          TMOD = 0x01;
-  36   1      
-  37   1          // Calculo del valor inicial de TR0
-  38   1          vi_inicial = (0xFFFF - 1) - BASE_DE_TIEMPO * FREQ_OSCI / 12.0;
-  39   1      
-  40   1          // Carga en TL0 y TH0
-  41   1          TL0 = TL_carga = vi_inicial;
-  42   1          TH0 = TH_carga = vi_inicial >> 8;
-  43   1      
-  44   1          // Habilitacion interrupciones
-  45   1          EA  = 1;
-  46   1          ET0 = 1;
-  47   1      
-  48   1          // Ponemos P3.2;P3.3;P3.4;P3.5 a 0 para evitar problemas
-  49   1          P3 = 0xC3;
-  50   1      
-  51   1          // Arrancamos el TR0
-  52   1          TR0 = 1;
-  53   1      }
-  54          
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/13/2023 00:31:22 PAGE 2   
+  16          // salidas
+  17          sbit LED_M           = 0xC0;
+  18          sbit ValvulaVaciado  = 0xC1;
+  19          sbit BombaHidraulica = 0xC2;
+  20          
+  21          void inicializar(void);
+  22          
+  23          void main(void)
+  24          {
+  25   1          inicializar();
+  26   1          while (1) {
+  27   2              while (marcha == 0) {
+  28   3                  TR0             = 0;
+  29   3                  contador        = 0;
+  30   3                  BombaHidraulica = 0;
+  31   3                  ValvulaVaciado  = 0;
+  32   3                  TL0             = TL_0;
+  33   3                  TH0             = TH_0;
+  34   3              }
+  35   2              if ((marcha == 1) && ((S2 == 0) || (S1 == 0))) {
+  36   3                  TR0   = 1;
+  37   3                  LED_M = 1;
+  38   3                  if ((S2 == 1)&&(S1 == 1)){
+  39   4                      TR0 = 0;
+  40   4                  }
+  41   3                  
+  42   3              }
+  43   2          }
+  44   1      }
+  45          
+  46          void inicializar(void)
+  47          {
+  48   1          // varoables locales
+  49   1          unsigned int vi;
+  50   1          TMOD            = 0x01;
+  51   1          vi              = (0xFFFF + 1) - BaseTiempo * FrecOsc / 12.0;
+  52   1          TL_0            = vi;
+  53   1          TH_0            = vi >> 8;
+  54   1          TL0             = TL_0;
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/18/2023 09:49:10 PAGE 2   
 
-  55          unsigned int conversionAD(unsigned char canal)
-  56          {
-  57   1          /*OJO!!!! AL SIMULAR LOS VOLTAJES TIENEN QUE SER REALES, LOS PUERTOS ACEPTAN ENTRE 0 Y 5 VOLTIOS
-  58   1          SI SE SIMULA SE SIMULAN VOLTAJES ENTRE 0-5 SI SUBES DE 5 VOLTIOS DESBORDAS Y NO FUNCIONA*/
-  59   1      
-  60   1          // Variable local para devolver el valor
-  61   1          unsigned int resultadoConversion; // Mismo tipo de dato que la funcion unsigned int!!!!
-  62   1      
-  63   1          // Ponemos ADCON al 0
-  64   1          ADCON = ADCON & 0x00;
-  65   1      
-  66   1          // Configuramos ADCON
-  67   1          ADCON = ADCON | canal;
-  68   1      
-  69   1          // Iniciamos la conversion
-  70   1          ADCON = ADCON | 0x8;
-  71   1      
-  72   1          // Esperamos a que la conversion este completada
-  73   1      
-  74   1          while ((ADCON & (0x10)) == 0)
-  75   1              ;
-  76   1      
-  77   1          // Ponemos ADCI a 0
-  78   1          ADCON = ADCON & 0xEF;
-  79   1      
-  80   1          // Guardamos en resultadoConversion
-  81   1      
-  82   1          resultadoConversion = (ADCON >> 6) | ADCH << 2;
-  83   1      
-  84   1          return (resultadoConversion);
-  85   1      }
-  86          
-  87          void interrupcionTR0(void) interrupt 1 using 1
-  88          {
-  89   1      
-  90   1          // Variables locales
-  91   1          static unsigned int referenciaTemperatura, temperatura, codigoDigitalReferenciaTemperatura, codigoDigi
-             -talTemperatura;
-  92   1          int error;
-  93   1          static unsigned char contador;
-  94   1          // Carga de nuevo valores iniciales TR0
-  95   1          TL0 = TL_carga;
-  96   1          TH0 = TH_carga;
-  97   1      
-  98   1          contador++;
-  99   1      
- 100   1          // Obtenenmos los valores de la referencia de temperatura y la temperatura
- 101   1      
- 102   1          codigoDigitalReferenciaTemperatura = conversionAD(0);
- 103   1          codigoDigitalTemperatura           = conversionAD(1);
- 104   1      
- 105   1          referenciaTemperatura = (97.5 / 1023) * codigoDigitalReferenciaTemperatura + 25;
- 106   1          temperatura           = (97.5 / 1023) * codigoDigitalTemperatura + 25;
- 107   1      
- 108   1          // Obtenemos el error
- 109   1          error = referenciaTemperatura - temperatura;
- 110   1      
- 111   1          // Segun el signo de error seleccionamos una se;al de salida en P3 y ponemos a cero el contador para v
-             -olver a contar 10 segundos
- 112   1          if (contador == 200) {
- 113   2              if (error > 0) {
- 114   3                  P3 = 0xFF;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/13/2023 00:31:22 PAGE 3   
-
- 115   3              } else if (error <= 0) {
- 116   3                  P3 = 0xC3;
- 117   3              }
- 118   2              contador = 0;
- 119   2          }
- 120   1      }
+  55   1          TH0             = TH_0;
+  56   1          EA              = 1;
+  57   1          ET0             = 1;
+  58   1          LED_M           = 0;
+  59   1          ValvulaVaciado  = 0;
+  60   1          BombaHidraulica = 0;
+  61   1          
+  62   1      }
+  63          
+  64          void interrupcion(void) interrupt 1 using 2
+  65          {
+  66   1          TL0      = TL_0;
+  67   1          TH0      = TH_0;
+  68   1          contador = contador + 1;
+  69   1          if (contador == 1) {
+  70   2              ValvulaVaciado  = 0;
+  71   2              BombaHidraulica = 1;
+  72   2          }
+  73   1          if ((contador == (10 * DesbordamientosPorSegudo)) || (S2 == 1)) {
+  74   2              ValvulaVaciado  = 1;
+  75   2              BombaHidraulica = 0;
+  76   2              contador        = 0;
+  77   2          }
+  78   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    251    ----
+   CODE SIZE        =    123    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     11    ----
+   DATA SIZE        =      3    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
