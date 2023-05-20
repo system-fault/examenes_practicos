@@ -14,27 +14,32 @@ float temperatura;
 bit mantenimientoOut;
 
 // entradas
-sbit marcha              = 0x90;
-sbit S1                  = 0x91;
-sbit S2                  = 0x92;
-sbit control_temperatura = 0x97;
+sbit marcha              = 0x90; // P1.0
+sbit S1                  = 0x91; // P1.1
+sbit S2                  = 0x92; // P1.2
+sbit control_temperatura = 0x97; // P1.7
 sbit mantenimiento       = 0xB2; // interrupcion externa 0 logica negada un cero lo trataremos como un uno
 
 // salidas
-sbit LED_M                  = 0xC0;
-sbit ValvulaVaciado         = 0xC1;
-sbit BombaHidraulica        = 0xC2;
-sbit LED_T                  = 0xC7;
-sbit resistenciaCalentadora = 0xC6;
+sbit LED_M                  = 0xC0; // 4.0
+sbit ValvulaVaciado         = 0xC1; // 4.1
+sbit BombaHidraulica        = 0xC2; // P4.2
+sbit LED_T                  = 0xC7; // P4.7
+sbit resistenciaCalentadora = 0xC6; // P4.6
 
 void inicializar(void);
 unsigned int conversionAD(unsigned char canal);
 
+// FUNCION MAIN
 void main(void)
 {
+    // Inicializa los valores iniciales
     inicializar();
+
+    // Bucle principal
     while (1) {
 
+        // Mientras marcha a off o se acaba de salir de un mantenimiento
         while ((marcha == 0) || (mantenimientoOut == 1)) {
             // Variables y salidas valores iniciales
             TR0                 = 0;
@@ -50,6 +55,9 @@ void main(void)
             // Si acabamos de hacer un manteniemiento ponemos a cero el bit de registro de entrada al modo mantenimiento
             if (mantenimientoOut == 1) { mantenimientoOut = 0; }
         }
+
+        /* Mientras marcha on y el bit de mantenimeinto a cero(solo pasando por la racerga
+        de valores iniciales se puede resetear este bit)*/
         while ((marcha == 1) && (!mantenimientoOut)) {
 
             // Encendemos el led
@@ -216,6 +224,6 @@ void interrupcionMantenimiento(void) interrupt 0 using 3
     // Activamos el bit que registra la entrada al modo mantenimiento
     mantenimientoOut = 1;
     // Espera a que mantnimiento este a nivel alto para salir de la interrupcion
-    while (mantenimiento)
+    while (!mantenimiento)
         ;
 }

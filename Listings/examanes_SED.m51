@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/20/2023  23:27:38  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/20/2023  23:58:32  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -44,9 +44,9 @@ LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
             CODE    0B0DH     00E6H     UNIT         ?PR?MAIN?EXAMEN
             CODE    0BF3H     0028H     UNIT         ?PR?_CONVERSIONAD?EXAMEN
             CODE    0C1BH     0026H     UNIT         ?PR?INICIALIZAR?EXAMEN
-            CODE    0C41H     0015H     UNIT         ?PR?INTERRUPCIONMANTENIMIENTO?EXAMEN
-            CODE    0C56H     0014H     UNIT         ?PR?INTERRUPCION?EXAMEN
-            CODE    0C6AH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0C41H     001EH     UNIT         ?PR?INTERRUPCIONMANTENIMIENTO?EXAMEN
+            CODE    0C5FH     0014H     UNIT         ?PR?INTERRUPCIONTR0?EXAMEN
+            CODE    0C73H     000CH     UNIT         ?C_C51STARTUP
 
 
 
@@ -59,7 +59,7 @@ SEGMENT
 ?C_C51STARTUP
   +--> ?PR?MAIN?EXAMEN
 
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:58:32  PAGE 2
 
 
 ?PR?MAIN?EXAMEN
@@ -76,6 +76,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         MODULE        EXAMEN
   C:0000H         SYMBOL        _ICE_DUMMY_
   B:00B0H.2       PUBLIC        mantenimiento
+  C:0C5FH         PUBLIC        interrupcionTR0
   B:00C0H.0       PUBLIC        LED_M
   B:0090H.1       PUBLIC        S1
   B:0090H.2       PUBLIC        S2
@@ -90,7 +91,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   B:00C0H.1       PUBLIC        ValvulaVaciado
   D:000AH         PUBLIC        contadorLlenado
   C:0B0DH         PUBLIC        main
-  C:0C56H         PUBLIC        interrupcion
   D:000BH         PUBLIC        TH_0
   D:000CH         PUBLIC        TL_0
   D:000DH         PUBLIC        temperatura
@@ -111,137 +111,141 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         PROC          MAIN
   C:0B0DH         LINE#         34
   C:0B0DH         LINE#         35
-  C:0B0DH         LINE#         36
-  C:0B10H         LINE#         37
-  C:0B10H         LINE#         39
-  C:0B16H         LINE#         40
-  C:0B18H         LINE#         41
-  C:0B1BH         LINE#         42
-  C:0B1DH         LINE#         43
-  C:0B1FH         LINE#         44
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 3
+  C:0B0DH         LINE#         37
+  C:0B10H         LINE#         40
+  C:0B10H         LINE#         43
+  C:0B16H         LINE#         45
+  C:0B18H         LINE#         46
+  C:0B1BH         LINE#         47
+  C:0B1DH         LINE#         48
+  C:0B1FH         LINE#         49
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:58:32  PAGE 3
 
 
-  C:0B21H         LINE#         45
-  C:0B24H         LINE#         46
-  C:0B27H         LINE#         47
-  C:0B29H         LINE#         49
-  C:0B2EH         LINE#         50
-  C:0B30H         LINE#         51
-  C:0B36H         LINE#         54
-  C:0B38H         LINE#         59
-  C:0B3BH         LINE#         60
-  C:0B3DH         LINE#         61
-  C:0B40H         LINE#         62
-  C:0B42H         LINE#         63
-  C:0B42H         LINE#         65
-  C:0B48H         LINE#         66
-  C:0B4AH         LINE#         67
-  C:0B4CH         LINE#         68
-  C:0B4FH         LINE#         69
-  C:0B51H         LINE#         70
-  C:0B54H         LINE#         71
-  C:0B57H         LINE#         72
-  C:0B57H         LINE#         75
-  C:0B5DH         LINE#         77
-  C:0B5FH         LINE#         78
-  C:0B61H         LINE#         79
-  C:0B63H         LINE#         80
-  C:0B63H         LINE#         84
-  C:0B6CH         LINE#         85
-  C:0B6EH         LINE#         86
-  C:0B70H         LINE#         88
-  C:0B72H         LINE#         89
-  C:0B75H         LINE#         90
-  C:0B78H         LINE#         91
-  C:0B7BH         LINE#         94
-  C:0B7DH         LINE#         95
-  C:0B7DH         LINE#         100
-  C:0B83H         LINE#         103
-  C:0B85H         LINE#         104
-  C:0B87H         LINE#         106
-  C:0B8DH         LINE#         109
-  C:0B8FH         LINE#         112
-  C:0B98H         LINE#         114
-  C:0BBDH         LINE#         116
-  C:0BD3H         LINE#         117
-  C:0BD5H         LINE#         118
-  C:0BD5H         LINE#         119
-  C:0BEEH         LINE#         120
-  C:0BF0H         LINE#         121
-  C:0BF0H         LINE#         122
-  C:0BF0H         LINE#         123
-  C:0BF0H         LINE#         124
+  C:0B21H         LINE#         51
+  C:0B24H         LINE#         52
+  C:0B27H         LINE#         54
+  C:0B29H         LINE#         56
+  C:0B2EH         LINE#         57
+  C:0B30H         LINE#         61
+  C:0B36H         LINE#         64
+  C:0B38H         LINE#         68
+  C:0B3BH         LINE#         69
+  C:0B3DH         LINE#         70
+  C:0B40H         LINE#         71
+  C:0B42H         LINE#         72
+  C:0B42H         LINE#         74
+  C:0B48H         LINE#         75
+  C:0B4AH         LINE#         76
+  C:0B4CH         LINE#         77
+  C:0B4FH         LINE#         78
+  C:0B51H         LINE#         79
+  C:0B54H         LINE#         80
+  C:0B57H         LINE#         81
+  C:0B57H         LINE#         84
+  C:0B5DH         LINE#         86
+  C:0B5FH         LINE#         87
+  C:0B61H         LINE#         88
+  C:0B63H         LINE#         89
+  C:0B63H         LINE#         93
+  C:0B6CH         LINE#         94
+  C:0B6EH         LINE#         95
+  C:0B70H         LINE#         97
+  C:0B72H         LINE#         98
+  C:0B75H         LINE#         99
+  C:0B78H         LINE#         100
+  C:0B7BH         LINE#         103
+  C:0B7DH         LINE#         104
+  C:0B7DH         LINE#         109
+  C:0B83H         LINE#         112
+  C:0B85H         LINE#         113
+  C:0B87H         LINE#         116
+  C:0B8DH         LINE#         119
+  C:0B8FH         LINE#         122
+  C:0B98H         LINE#         124
+  C:0BBDH         LINE#         126
+  C:0BD3H         LINE#         127
+  C:0BD5H         LINE#         128
+  C:0BD5H         LINE#         130
+  C:0BEEH         LINE#         131
+  C:0BF0H         LINE#         132
+  C:0BF0H         LINE#         133
+  C:0BF0H         LINE#         134
+  C:0BF0H         LINE#         135
   -------         ENDPROC       MAIN
   -------         PROC          INICIALIZAR
   -------         DO            
   D:0006H         SYMBOL        vi
   -------         ENDDO         
-  C:0C1BH         LINE#         128
-  C:0C1BH         LINE#         129
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 4
+  C:0C1BH         LINE#         142
+  C:0C1BH         LINE#         143
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:58:32  PAGE 4
 
 
-  C:0C1BH         LINE#         133
-  C:0C1EH         LINE#         135
-  C:0C22H         LINE#         137
-  C:0C24H         LINE#         138
-  C:0C26H         LINE#         140
-  C:0C29H         LINE#         141
-  C:0C2CH         LINE#         143
-  C:0C2EH         LINE#         144
-  C:0C30H         LINE#         145
-  C:0C32H         LINE#         146
-  C:0C34H         LINE#         148
-  C:0C36H         LINE#         149
-  C:0C38H         LINE#         151
-  C:0C3AH         LINE#         152
-  C:0C3CH         LINE#         154
-  C:0C3EH         LINE#         156
-  C:0C40H         LINE#         157
+  C:0C1BH         LINE#         147
+  C:0C1EH         LINE#         149
+  C:0C22H         LINE#         151
+  C:0C24H         LINE#         152
+  C:0C26H         LINE#         154
+  C:0C29H         LINE#         155
+  C:0C2CH         LINE#         157
+  C:0C2EH         LINE#         158
+  C:0C30H         LINE#         159
+  C:0C32H         LINE#         160
+  C:0C34H         LINE#         162
+  C:0C36H         LINE#         163
+  C:0C38H         LINE#         165
+  C:0C3AH         LINE#         166
+  C:0C3CH         LINE#         168
+  C:0C3EH         LINE#         170
+  C:0C40H         LINE#         171
   -------         ENDPROC       INICIALIZAR
-  -------         PROC          INTERRUPCION
-  C:0C56H         LINE#         159
-  C:0C56H         LINE#         163
-  C:0C59H         LINE#         164
-  C:0C5CH         LINE#         167
-  C:0C5FH         LINE#         168
-  C:0C61H         LINE#         171
-  C:0C67H         LINE#         172
-  C:0C69H         LINE#         173
-  C:0C69H         LINE#         174
-  -------         ENDPROC       INTERRUPCION
+  -------         PROC          INTERRUPCIONTR0
+  C:0C5FH         LINE#         174
+  C:0C5FH         LINE#         178
+  C:0C62H         LINE#         179
+  C:0C65H         LINE#         182
+  C:0C68H         LINE#         183
+  C:0C6AH         LINE#         186
+  C:0C70H         LINE#         187
+  C:0C72H         LINE#         188
+  C:0C72H         LINE#         189
+  -------         ENDPROC       INTERRUPCIONTR0
   -------         PROC          _CONVERSIONAD
   D:0007H         SYMBOL        canal
-  C:0BF3H         LINE#         176
-  C:0BF3H         LINE#         177
-  C:0BF3H         LINE#         179
-  C:0BF6H         LINE#         180
-  C:0BF9H         LINE#         182
-  C:0BFCH         LINE#         184
-  C:0C02H         LINE#         187
-  C:0C05H         LINE#         189
-  C:0C1AH         LINE#         190
+  C:0BF3H         LINE#         192
+  C:0BF3H         LINE#         193
+  C:0BF3H         LINE#         195
+  C:0BF6H         LINE#         196
+  C:0BF9H         LINE#         198
+  C:0BFCH         LINE#         200
+  C:0C02H         LINE#         203
+  C:0C05H         LINE#         205
+  C:0C1AH         LINE#         206
   -------         ENDPROC       _CONVERSIONAD
   -------         PROC          INTERRUPCIONMANTENIMIENTO
-  C:0C41H         LINE#         192
-  C:0C41H         LINE#         196
-  C:0C43H         LINE#         197
-  C:0C45H         LINE#         198
-  C:0C47H         LINE#         199
-  C:0C49H         LINE#         200
-  C:0C4BH         LINE#         201
-  C:0C4DH         LINE#         204
-  C:0C4FH         LINE#         205
-  C:0C55H         LINE#         207
+  C:0C41H         LINE#         209
+  C:0C41H         LINE#         213
+  C:0C43H         LINE#         214
+  C:0C45H         LINE#         215
+  C:0C47H         LINE#         216
+  C:0C49H         LINE#         217
+  C:0C4BH         LINE#         218
+  C:0C4DH         LINE#         219
+  C:0C50H         LINE#         220
+  C:0C53H         LINE#         221
+  C:0C56H         LINE#         222
+  C:0C59H         LINE#         225
+  C:0C5BH         LINE#         227
+  C:0C5EH         LINE#         229
   -------         ENDPROC       INTERRUPCIONMANTENIMIENTO
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:58:32  PAGE 5
+
+
   -------         ENDMOD        EXAMEN
 
   -------         MODULE        ?C?FPADD
   C:0807H         PUBLIC        ?C?FPADD
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 5
-
-
   C:0803H         PUBLIC        ?C?FPSUB
   -------         ENDMOD        ?C?FPADD
 
@@ -265,8 +269,8 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   -------         ENDMOD        ?C?LNEG
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0163H BYTE (17%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 016CH BYTE (17%) *
 ******************************************************************************
 
-Program Size: data=19.2 xdata=0 code=1151
+Program Size: data=19.2 xdata=0 code=1160
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
