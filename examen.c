@@ -20,9 +20,8 @@ sbit S2                  = 0x92;
 sbit control_temperatura = 0x97;
 sbit mantenimiento       = 0xB2; // interrupcion externa 0 logica negada un cero lo trataremos como un uno
 
-
-    // salidas
-    sbit LED_M              = 0xC0;
+// salidas
+sbit LED_M                  = 0xC0;
 sbit ValvulaVaciado         = 0xC1;
 sbit BombaHidraulica        = 0xC2;
 sbit LED_T                  = 0xC7;
@@ -37,23 +36,25 @@ void main(void)
     while (1) {
 
         while ((marcha == 0) || (mantenimientoOut == 1)) {
+            // Variables y salidas valores iniciales
             TR0                 = 0;
             contadorLlenado     = 0;
             contadorTemperatura = 0;
             BombaHidraulica     = 0;
             ValvulaVaciado      = 0;
-            TL0                 = TL_0;
-            TH0                 = TH_0;
-            primerLlenado       = 0;
+            // Carga valores iniciales TR0
+            TL0 = TL_0;
+            TH0 = TH_0;
+            // Bit de control de primer llenado 0 (no se ha realizado) 1 (ya se ha llenado el tanque una vez)
+            primerLlenado = 0;
             // Si acabamos de hacer un manteniemiento ponemos a cero el bit de registro de entrada al modo mantenimiento
             if (mantenimientoOut == 1) { mantenimientoOut = 0; }
         }
-        while ((marcha == 1)&&(!mantenimientoOut)) {
+        while ((marcha == 1) && (!mantenimientoOut)) {
 
             // Encendemos el led
             LED_M = 1;
 
-            /*### CONTROL DE TEMPERATURA ###*/
             /* Si la bomba hidraulica esta encendida estamos en un ciclo de llenado y el control de temperatura tiene que estar apagado
             O si esta la bomba apagada y el control de temperatura apagado reinicia el control de temperatura y para el TR0  */
             if ((BombaHidraulica)) {
@@ -84,7 +85,7 @@ void main(void)
             if ((contadorLlenado == (10 * DesbordamientosPorSegudo)) || (S2 == 1)) {
                 ValvulaVaciado  = 1;
                 BombaHidraulica = 0;
-                // Paramos el TR0, lo recargamos y a la espera de empezar un nuevo ciclo
+                // Paramos el TR0 y lo recargamos,a la espera de empezar un nuevo ciclo
                 TR0             = 0;
                 TL0             = TL_0;
                 TH0             = TH_0;
@@ -103,6 +104,7 @@ void main(void)
                 LED_T = 1;
                 TR0   = 1;
 
+                // Si han pasado diez segundos ejecuta la lectura de la temperatura
                 if (contadorTemperatura == (10 * DesbordamientosPorSegudo)) {
 
                     // Reset al contador
@@ -112,10 +114,11 @@ void main(void)
                     codigoTemperatura = conversionAD(Canal_lectura_temperatura);
                     // calculamos la temperatura
                     temperatura = (130.0 / 1023) * codigoTemperatura - 30.0;
-
+                    // Si la temperatura es <= que 30 se enciende la resistancia
                     if (temperatura <= 30) {
                         resistenciaCalentadora = 1;
                     }
+                    // Si la temperatura es > que 30 se apaga la resistancia
                     if (temperatura > 30) {
                         resistenciaCalentadora = 0;
                     }
@@ -125,9 +128,12 @@ void main(void)
     }
 }
 
+/*##################### FUNCIONES #####################*/
+
+// INICIALIZAR
 void inicializar(void)
 {
-    // varoables locales
+    // variables locales
     unsigned int vi;
     // configuramos tmod timer 0 16 bits
     TMOD = 0x01;
@@ -140,10 +146,10 @@ void inicializar(void)
     TL0 = TL_0;
     TH0 = TH_0;
     // Habilitamos las interrupciones
-    EA  = 1;
-    ET0 = 1;
-    EX0 = 1;
-    IT0 = 0;
+    EA  = 1; // Globales
+    ET0 = 1; // timer 0
+    EX0 = 1; // externa 0 pin3.2
+    IT0 = 0; // externa por nivel
     // desactivamos los LEDs
     LED_T = 0;
     LED_M = 0;
@@ -156,7 +162,8 @@ void inicializar(void)
     mantenimientoOut = 0;
 }
 
-void interrupcion(void) interrupt 1 using 2
+// INTERRUPCION TIMER 0
+void interrupcionTR0(void) interrupt 1 using 2
 {
 
     // Recargamos el TR0 al entrar en la interrupcion
@@ -173,6 +180,7 @@ void interrupcion(void) interrupt 1 using 2
     }
 }
 
+// CONVERSION ANALOGICO DIGITAL
 unsigned int conversionAD(unsigned char canal)
 {
 
@@ -189,19 +197,25 @@ unsigned int conversionAD(unsigned char canal)
     return (ADCON >> 6 | ADCH << 2); // devolvemos el valor
 }
 
+// INTERRUPCION EXTERNA P3.2
 void interrupcionMantenimiento(void) interrupt 0 using 3
 {
 
     // Apagamos todas las salidas
-    BombaHidraulica        = 0; // apagada
-    ValvulaVaciado         = 0; // Cerrada
-    LED_M                  = 0;
-    LED_T                  = 0;
-    resistenciaCalentadora = 0;
-    TR0 = 0;
+    BombaHidraulica        = 0;    // apagada
+    ValvulaVaciado         = 0;    // Cerrada
+    LED_M                  = 0;    // off
+    LED_T                  = 0;    // off
+    resistenciaCalentadora = 0;    // off
+    TR0                    = 0;    // off
+    contadorLlenado        = 0;    // reset
+    contadorTemperatura    = 0;    // reset
+    TL0                    = TL_0; // valor inicial
+    TH0                    = TH_0; // valor inicial
 
     // Activamos el bit que registra la entrada al modo mantenimiento
     mantenimientoOut = 1;
-    while ((mantenimiento == 0)&&(marcha))
+    // Espera a que mantnimiento este a nivel alto para salir de la interrupcion
+    while (mantenimiento)
         ;
 }

@@ -137,16 +137,16 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDP51</Key>
-          <Name>(98=903,10,1246,304,1)(82=-1,-1,-1,-1,0)(83=706,347,914,462,1)(84=-1,-1,-1,-1,0)(85=594,414,802,529,0)(5009=702,117,910,232,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=903,297,1113,572,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=1018,298,1244,643,0)</Name>
+          <Name>(98=903,10,1246,304,1)(82=-1,-1,-1,-1,0)(83=657,486,865,601,1)(84=-1,-1,-1,-1,0)(85=851,485,1059,600,1)(5009=462,487,670,602,1)(5010=-1,-1,-1,-1,0)(80=-1,-1,-1,-1,0)(91=703,87,913,362,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=1049,299,1275,644,1)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>55</LineNumber>
+          <LineNumber>205</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16775059</Address>
+          <Address>-16774065</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -155,14 +155,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>EXAMEN.C</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\EXAMEN\205</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>74</LineNumber>
+          <LineNumber>47</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16775131</Address>
+          <Address>-16774361</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -178,12 +178,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>contador,0x0A</ItemText>
+          <ItemText>contadorLlenado,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>S1</ItemText>
+          <ItemText>contadorTemperatura,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
@@ -193,7 +193,22 @@
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>marcha</ItemText>
+          <ItemText>S1</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>primerLlenado</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>temperatura</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>mantenimientoOut</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

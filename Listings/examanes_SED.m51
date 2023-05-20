@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/18/2023  09:49:10  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/20/2023  23:27:38  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -6,12 +6,18 @@ C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\examen.obj TO .\Objects\examanes_SED PRINT
 >> 256)
 
 
-MEMORY MODEL: SMALL
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
 
 
 INPUT MODULES INCLUDED:
   .\Objects\examen.obj (EXAMEN)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPCMP)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
 
 
 LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
@@ -22,20 +28,25 @@ LINK MAP OF MODULE:  .\Objects\examanes_SED (EXAMEN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     0003H     UNIT         ?DT?EXAMEN
-                    000BH     0005H                  *** GAP ***
-            REG     0010H     0008H     ABSOLUTE     "REG BANK 2"
-            IDATA   0018H     0001H     UNIT         ?STACK
+            DATA    0008H     000AH     UNIT         ?DT?EXAMEN
+                    0012H     000EH                  *** GAP ***
+            BIT     0020H.0   0000H.2   UNIT         ?BI?EXAMEN
+                    0020H.2   0000H.6                *** GAP ***
+            IDATA   0021H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-                    0003H     0008H                  *** GAP ***
+            CODE    0003H     0003H     ABSOLUTE     
+                    0006H     0005H                  *** GAP ***
             CODE    000BH     0003H     ABSOLUTE     
                     000EH     07F2H                  *** GAP ***
-            CODE    0800H     0031H     UNIT         ?PR?INTERRUPCION?EXAMEN
-            CODE    0831H     002EH     UNIT         ?PR?MAIN?EXAMEN
-            CODE    085FH     001CH     UNIT         ?PR?INICIALIZAR?EXAMEN
-            CODE    087BH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0800H     030DH     UNIT         ?C?LIB_CODE
+            CODE    0B0DH     00E6H     UNIT         ?PR?MAIN?EXAMEN
+            CODE    0BF3H     0028H     UNIT         ?PR?_CONVERSIONAD?EXAMEN
+            CODE    0C1BH     0026H     UNIT         ?PR?INICIALIZAR?EXAMEN
+            CODE    0C41H     0015H     UNIT         ?PR?INTERRUPCIONMANTENIMIENTO?EXAMEN
+            CODE    0C56H     0014H     UNIT         ?PR?INTERRUPCION?EXAMEN
+            CODE    0C6AH     000CH     UNIT         ?C_C51STARTUP
 
 
 
@@ -48,8 +59,12 @@ SEGMENT
 ?C_C51STARTUP
   +--> ?PR?MAIN?EXAMEN
 
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 2
+
+
 ?PR?MAIN?EXAMEN
   +--> ?PR?INICIALIZAR?EXAMEN
+  +--> ?PR?_CONVERSIONAD?EXAMEN
 
 
 
@@ -59,93 +74,199 @@ SYMBOL TABLE OF MODULE:  .\Objects\examanes_SED (EXAMEN)
   ----------------------------------
 
   -------         MODULE        EXAMEN
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/18/2023  09:49:10  PAGE 2
-
-
   C:0000H         SYMBOL        _ICE_DUMMY_
+  B:00B0H.2       PUBLIC        mantenimiento
   B:00C0H.0       PUBLIC        LED_M
   B:0090H.1       PUBLIC        S1
   B:0090H.2       PUBLIC        S2
   B:00A8H.7       PUBLIC        EA
-  C:085FH         PUBLIC        inicializar
+  B:00C0H.6       PUBLIC        resistenciaCalentadora
+  B:00C0H.7       PUBLIC        LED_T
+  D:0008H         PUBLIC        codigoTemperatura
+  C:0C41H         PUBLIC        interrupcionMantenimiento
+  D:00C6H         PUBLIC        ADCH
+  C:0C1BH         PUBLIC        inicializar
+  B:0090H.7       PUBLIC        control_temperatura
   B:00C0H.1       PUBLIC        ValvulaVaciado
-  C:0831H         PUBLIC        main
-  C:0800H         PUBLIC        interrupcion
-  D:0008H         PUBLIC        TH_0
-  D:0009H         PUBLIC        TL_0
+  D:000AH         PUBLIC        contadorLlenado
+  C:0B0DH         PUBLIC        main
+  C:0C56H         PUBLIC        interrupcion
+  D:000BH         PUBLIC        TH_0
+  D:000CH         PUBLIC        TL_0
+  D:000DH         PUBLIC        temperatura
   D:0089H         PUBLIC        TMOD
+  B:0020H.0       PUBLIC        mantenimientoOut
   B:00A8H.1       PUBLIC        ET0
   D:008CH         PUBLIC        TH0
+  B:00A8H.0       PUBLIC        EX0
+  B:0088H.0       PUBLIC        IT0
   D:008AH         PUBLIC        TL0
+  C:0BF3H         PUBLIC        _conversionAD
   B:0088H.4       PUBLIC        TR0
-  D:000AH         PUBLIC        contador
+  B:0020H.1       PUBLIC        primerLlenado
   B:00C0H.2       PUBLIC        BombaHidraulica
+  D:00C5H         PUBLIC        ADCON
   B:0090H.0       PUBLIC        marcha
+  D:0011H         PUBLIC        contadorTemperatura
   -------         PROC          MAIN
-  C:0831H         LINE#         23
-  C:0831H         LINE#         24
-  C:0831H         LINE#         25
-  C:0834H         LINE#         26
-  C:0834H         LINE#         27
-  C:0837H         LINE#         28
-  C:0839H         LINE#         29
-  C:083CH         LINE#         30
-  C:083EH         LINE#         31
-  C:0840H         LINE#         32
-  C:0843H         LINE#         33
-  C:0846H         LINE#         34
-  C:0848H         LINE#         35
-  C:0851H         LINE#         36
-  C:0853H         LINE#         37
-  C:0855H         LINE#         38
-  C:085BH         LINE#         39
-  C:085DH         LINE#         40
-  C:085DH         LINE#         42
-  C:085DH         LINE#         43
+  C:0B0DH         LINE#         34
+  C:0B0DH         LINE#         35
+  C:0B0DH         LINE#         36
+  C:0B10H         LINE#         37
+  C:0B10H         LINE#         39
+  C:0B16H         LINE#         40
+  C:0B18H         LINE#         41
+  C:0B1BH         LINE#         42
+  C:0B1DH         LINE#         43
+  C:0B1FH         LINE#         44
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 3
+
+
+  C:0B21H         LINE#         45
+  C:0B24H         LINE#         46
+  C:0B27H         LINE#         47
+  C:0B29H         LINE#         49
+  C:0B2EH         LINE#         50
+  C:0B30H         LINE#         51
+  C:0B36H         LINE#         54
+  C:0B38H         LINE#         59
+  C:0B3BH         LINE#         60
+  C:0B3DH         LINE#         61
+  C:0B40H         LINE#         62
+  C:0B42H         LINE#         63
+  C:0B42H         LINE#         65
+  C:0B48H         LINE#         66
+  C:0B4AH         LINE#         67
+  C:0B4CH         LINE#         68
+  C:0B4FH         LINE#         69
+  C:0B51H         LINE#         70
+  C:0B54H         LINE#         71
+  C:0B57H         LINE#         72
+  C:0B57H         LINE#         75
+  C:0B5DH         LINE#         77
+  C:0B5FH         LINE#         78
+  C:0B61H         LINE#         79
+  C:0B63H         LINE#         80
+  C:0B63H         LINE#         84
+  C:0B6CH         LINE#         85
+  C:0B6EH         LINE#         86
+  C:0B70H         LINE#         88
+  C:0B72H         LINE#         89
+  C:0B75H         LINE#         90
+  C:0B78H         LINE#         91
+  C:0B7BH         LINE#         94
+  C:0B7DH         LINE#         95
+  C:0B7DH         LINE#         100
+  C:0B83H         LINE#         103
+  C:0B85H         LINE#         104
+  C:0B87H         LINE#         106
+  C:0B8DH         LINE#         109
+  C:0B8FH         LINE#         112
+  C:0B98H         LINE#         114
+  C:0BBDH         LINE#         116
+  C:0BD3H         LINE#         117
+  C:0BD5H         LINE#         118
+  C:0BD5H         LINE#         119
+  C:0BEEH         LINE#         120
+  C:0BF0H         LINE#         121
+  C:0BF0H         LINE#         122
+  C:0BF0H         LINE#         123
+  C:0BF0H         LINE#         124
   -------         ENDPROC       MAIN
   -------         PROC          INICIALIZAR
   -------         DO            
   D:0006H         SYMBOL        vi
   -------         ENDDO         
-  C:085FH         LINE#         46
-  C:085FH         LINE#         47
-  C:085FH         LINE#         50
-  C:0862H         LINE#         51
-  C:0866H         LINE#         52
-  C:0868H         LINE#         53
-  C:086AH         LINE#         54
-  C:086DH         LINE#         55
-  C:0870H         LINE#         56
-  C:0872H         LINE#         57
-  C:0874H         LINE#         58
-  C:0876H         LINE#         59
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/18/2023  09:49:10  PAGE 3
+  C:0C1BH         LINE#         128
+  C:0C1BH         LINE#         129
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 4
 
 
-  C:0878H         LINE#         60
-  C:087AH         LINE#         62
+  C:0C1BH         LINE#         133
+  C:0C1EH         LINE#         135
+  C:0C22H         LINE#         137
+  C:0C24H         LINE#         138
+  C:0C26H         LINE#         140
+  C:0C29H         LINE#         141
+  C:0C2CH         LINE#         143
+  C:0C2EH         LINE#         144
+  C:0C30H         LINE#         145
+  C:0C32H         LINE#         146
+  C:0C34H         LINE#         148
+  C:0C36H         LINE#         149
+  C:0C38H         LINE#         151
+  C:0C3AH         LINE#         152
+  C:0C3CH         LINE#         154
+  C:0C3EH         LINE#         156
+  C:0C40H         LINE#         157
   -------         ENDPROC       INICIALIZAR
   -------         PROC          INTERRUPCION
-  C:0800H         LINE#         64
-  C:0807H         LINE#         66
-  C:080AH         LINE#         67
-  C:080DH         LINE#         68
-  C:080FH         LINE#         69
-  C:0818H         LINE#         70
-  C:081AH         LINE#         71
-  C:081CH         LINE#         72
-  C:081CH         LINE#         73
-  C:0825H         LINE#         74
-  C:0827H         LINE#         75
-  C:0829H         LINE#         76
-  C:082CH         LINE#         77
-  C:082CH         LINE#         78
+  C:0C56H         LINE#         159
+  C:0C56H         LINE#         163
+  C:0C59H         LINE#         164
+  C:0C5CH         LINE#         167
+  C:0C5FH         LINE#         168
+  C:0C61H         LINE#         171
+  C:0C67H         LINE#         172
+  C:0C69H         LINE#         173
+  C:0C69H         LINE#         174
   -------         ENDPROC       INTERRUPCION
+  -------         PROC          _CONVERSIONAD
+  D:0007H         SYMBOL        canal
+  C:0BF3H         LINE#         176
+  C:0BF3H         LINE#         177
+  C:0BF3H         LINE#         179
+  C:0BF6H         LINE#         180
+  C:0BF9H         LINE#         182
+  C:0BFCH         LINE#         184
+  C:0C02H         LINE#         187
+  C:0C05H         LINE#         189
+  C:0C1AH         LINE#         190
+  -------         ENDPROC       _CONVERSIONAD
+  -------         PROC          INTERRUPCIONMANTENIMIENTO
+  C:0C41H         LINE#         192
+  C:0C41H         LINE#         196
+  C:0C43H         LINE#         197
+  C:0C45H         LINE#         198
+  C:0C47H         LINE#         199
+  C:0C49H         LINE#         200
+  C:0C4BH         LINE#         201
+  C:0C4DH         LINE#         204
+  C:0C4FH         LINE#         205
+  C:0C55H         LINE#         207
+  -------         ENDPROC       INTERRUPCIONMANTENIMIENTO
   -------         ENDMOD        EXAMEN
 
+  -------         MODULE        ?C?FPADD
+  C:0807H         PUBLIC        ?C?FPADD
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/20/2023  23:27:38  PAGE 5
+
+
+  C:0803H         PUBLIC        ?C?FPSUB
+  -------         ENDMOD        ?C?FPADD
+
+  -------         MODULE        ?C?FPMUL
+  C:08F8H         PUBLIC        ?C?FPMUL
+  -------         ENDMOD        ?C?FPMUL
+
+  -------         MODULE        ?C?FPCMP
+  C:0A00H         PUBLIC        ?C?FPCMP
+  C:09FEH         PUBLIC        ?C?FPCMP3
+  -------         ENDMOD        ?C?FPCMP
+
+  -------         MODULE        ?C?FCAST
+  C:0A81H         PUBLIC        ?C?FCASTC
+  C:0A7CH         PUBLIC        ?C?FCASTI
+  C:0A77H         PUBLIC        ?C?FCASTL
+  -------         ENDMOD        ?C?FCAST
+
+  -------         MODULE        ?C?LNEG
+  C:0AFFH         PUBLIC        ?C?LNEG
+  -------         ENDMOD        ?C?LNEG
+
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 007EH BYTE ( 6%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0163H BYTE (17%) *
 ******************************************************************************
 
-Program Size: data=20.0 xdata=0 code=141
+Program Size: data=19.2 xdata=0 code=1151
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
