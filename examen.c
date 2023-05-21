@@ -1,4 +1,14 @@
-#include <REG552.H>
+/*############################################################################
+  #*                                                                        *#
+  #* ## Autor: David                                                        *#
+  #* ## Proyecto: Control Deposito                                          *#
+  #* ## Fecha: Mayo de 2023                                                 *#
+  #* ## Lenguaje: C                                                         *#
+  #* ## Utilidad: Control de llenado y temperatura de un deposito           *#
+  #*                                                                        *#
+############################################################################*/
+
+#include <REG552.H> // Proporciona acceso a los registros del microcontrolador
 
 #define BASE_DE_TIEMPO            50000   // Base de tiempo para TR0 16bits
 #define FREQ_OSC                  11.0592 // Frecuencia del oscilador
