@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/21/2023 14:10:01 PAGE 1   
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/22/2023 09:09:09 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EXAMEN
@@ -8,260 +8,270 @@ COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE examen.c OPTIMIZE(8,SPEED) BROWS
 
 line level    source
 
-   1          #include <REG552.H>
-   2          
-   3          #define BASE_DE_TIEMPO            50000   // Base de tiempo para TR0 16bits
-   4          #define FREQ_OSC                  11.0592 // Frecuencia del oscilador
-   5          #define DESB_x_SEG                20      // Desbordamientos del TR0 por segundo
-   6          #define CANAL_LECTURA_TEMPERATURA 5       // Canal de lectura señal analogica
-   7          
-   8          // variables globales
-   9          unsigned char TL_0, TH_0;                           // Guarda valores iniciales de TL y TH
-  10          unsigned char contadorLlenado, contadorTemperatura; // Contadores para calcular tiempos
-  11          bit primerLlenado;                                  // Bit que controla si cuando ponemos en marcha es el 
+   1          /*############################################################################
+   2            #*                                                                        *#
+   3            #* ## Autor: David                                                        *#
+   4            #* ## Proyecto: Control Deposito                                          *#
+   5            #* ## Fecha: Mayo de 2023                                                 *#
+   6            #* ## Lenguaje: C                                                         *#
+   7            #* ## Utilidad: Control de llenado y temperatura de un deposito           *#
+   8            #*                                                                        *#
+   9          ############################################################################*/
+  10          
+  11          #include <REG552.H> // Proporciona acceso a los registros del microcontrolador
+  12          
+  13          #define BASE_DE_TIEMPO            50000   // Base de tiempo para TR0 16bits
+  14          #define FREQ_OSC                  11.0592 // Frecuencia del oscilador
+  15          #define DESB_x_SEG                20      // Desbordamientos del TR0 por segundo
+  16          #define CANAL_LECTURA_TEMPERATURA 5       // Canal de lectura señal analogica
+  17          
+  18          // variables globales
+  19          unsigned char TL_0, TH_0;                           // Guarda valores iniciales de TL y TH
+  20          unsigned char contadorLlenado, contadorTemperatura; // Contadores para calcular tiempos
+  21          bit primerLlenado;                                  // Bit que controla si cuando ponemos en marcha es el 
              -primer llenado de un ciclo
-  12          unsigned int codigoTemperatura;                     // Guarda el resultado de la conversion analogico-digi
+  22          unsigned int codigoTemperatura;                     // Guarda el resultado de la conversion analogico-digi
              -tal
-  13          float temperatura;                                  // Guarda el calculo de la temperatura
-  14          bit mantenimientoOut;                               /* Variable que controla si acabamos de salir de un ma
+  23          float temperatura;                                  // Guarda el calculo de la temperatura
+  24          bit mantenimientoOut;                               /* Variable que controla si acabamos de salir de un ma
              -ntenimiento y obliga a pasar
-  15                                                                 por el reinicio de las condiciones iniciales*/
-  16          
-  17          // entradas
-  18          sbit marcha             = 0x90; // P1.0
-  19          sbit S1                 = 0x91; // P1.1 sensor
-  20          sbit S2                 = 0x92; // P1.2 sensor
-  21          sbit controlTemperatura = 0x97; // P1.7
-  22          sbit mantenimiento      = 0xB2; // interrupcion externa 0, logica negada
-  23          
-  24          // salidas
-  25          sbit LED_M                  = 0xC0; // 4.0 led puesta en marcha
-  26          sbit valvulaVaciado         = 0xC1; // 4.1
-  27          sbit bombaHidraulica        = 0xC2; // P4.2
-  28          sbit LED_T                  = 0xC7; // P4.7 led control temperatura activada
-  29          sbit resistenciaCalentadora = 0xC6; // P4.6
-  30          
-  31          // Declaracion de funciones
-  32          void inicializar(void);
-  33          unsigned int conversionAD(unsigned char canal);
-  34          
-  35          // FUNCION MAIN
-  36          void main(void)
-  37          {
-  38   1          // Inicializa los valores iniciales
-  39   1          inicializar();
-  40   1      
-  41   1          // Bucle principal
-  42   1          while (1) {
-  43   2      
-  44   2              // Mientras marcha a off o se acaba de salir de un mantenimiento
-  45   2              while ((marcha == 0) || (mantenimientoOut == 1)) {
-  46   3                  // Variables y salidas valores iniciales
-  47   3                  TR0                 = 0;
-  48   3                  contadorLlenado     = 0;
-  49   3                  contadorTemperatura = 0;
-  50   3                  bombaHidraulica     = 0;
-  51   3                  valvulaVaciado      = 0;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/21/2023 14:10:01 PAGE 2   
+  25                                                                 por el reinicio de las condiciones iniciales*/
+  26          
+  27          // entradas
+  28          sbit marcha             = 0x90; // P1.0
+  29          sbit S1                 = 0x91; // P1.1 sensor
+  30          sbit S2                 = 0x92; // P1.2 sensor
+  31          sbit controlTemperatura = 0x97; // P1.7
+  32          sbit mantenimiento      = 0xB2; // interrupcion externa 0, logica negada
+  33          
+  34          // salidas
+  35          sbit LED_M                  = 0xC0; // 4.0 led puesta en marcha
+  36          sbit valvulaVaciado         = 0xC1; // 4.1
+  37          sbit bombaHidraulica        = 0xC2; // P4.2
+  38          sbit LED_T                  = 0xC7; // P4.7 led control temperatura activada
+  39          sbit resistenciaCalentadora = 0xC6; // P4.6
+  40          
+  41          // Declaracion de funciones
+  42          void inicializar(void);
+  43          unsigned int conversionAD(unsigned char canal);
+  44          
+  45          // FUNCION MAIN
+  46          void main(void)
+  47          {
+  48   1          // Inicializa los valores iniciales
+  49   1          inicializar();
+  50   1      
+  51   1          // Bucle principal
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/22/2023 09:09:09 PAGE 2   
 
-  52   3                  temperatura         = 0;
-  53   3                  // Carga valores iniciales TR0
-  54   3                  TL0 = TL_0;
-  55   3                  TH0 = TH_0;
-  56   3                  // Bit de control de primer llenado 0 (no se ha realizado) 1 (ya se ha llenado el tanque una v
+  52   1          while (1) {
+  53   2      
+  54   2              // Mientras marcha a off o se acaba de salir de un mantenimiento
+  55   2              while ((marcha == 0) || (mantenimientoOut == 1)) {
+  56   3                  // Variables y salidas valores iniciales
+  57   3                  TR0                 = 0;
+  58   3                  contadorLlenado     = 0;
+  59   3                  contadorTemperatura = 0;
+  60   3                  bombaHidraulica     = 0;
+  61   3                  valvulaVaciado      = 0;
+  62   3                  temperatura         = 0;
+  63   3                  // Carga valores iniciales TR0
+  64   3                  TL0 = TL_0;
+  65   3                  TH0 = TH_0;
+  66   3                  // Bit de control de primer llenado 0 (no se ha realizado) 1 (ya se ha llenado el tanque una v
              -ez)
-  57   3                  primerLlenado = 0;
-  58   3                  // Si acabamos de hacer un manteniemiento ponemos a cero el bit de registro de entrada al modo
+  67   3                  primerLlenado = 0;
+  68   3                  // Si acabamos de hacer un manteniemiento ponemos a cero el bit de registro de entrada al modo
              - mantenimiento
-  59   3                  if (mantenimientoOut == 1) { mantenimientoOut = 0; }
-  60   3              }
-  61   2      
-  62   2              /* Mientras marcha on y el bit de mantenimeinto a cero(solo pasando por la racerga
-  63   2              de valores iniciales se puede resetear este bit)*/
-  64   2              while ((marcha == 1) && (!mantenimientoOut)) {
-  65   3      
-  66   3                  // Encendemos el led
-  67   3                  LED_M = 1;
-  68   3      
-  69   3                  // Si la bomba hidraulica esta encendida estamos en un ciclo de llenado y el control de temper
+  69   3                  if (mantenimientoOut == 1) { mantenimientoOut = 0; }
+  70   3              }
+  71   2      
+  72   2              /* Mientras marcha on y el bit de mantenimeinto a cero(solo pasando por la racerga
+  73   2              de valores iniciales se puede resetear este bit)*/
+  74   2              while ((marcha == 1) && (!mantenimientoOut)) {
+  75   3      
+  76   3                  // Encendemos el led
+  77   3                  LED_M = 1;
+  78   3      
+  79   3                  // Si la bomba hidraulica esta encendida estamos en un ciclo de llenado y el control de temper
              -atura tiene que estar apagado
-  70   3                  if ((bombaHidraulica)) {
-  71   4                      LED_T                  = 0;
-  72   4                      contadorTemperatura    = 0;
-  73   4                      resistenciaCalentadora = 0;
-  74   4                  }
-  75   3                  /* Si esta la bomba apagada y el control de temperatura apagado, reinicia el control de temper
-             -atura y para el TR0,
-  76   3                  solo entra si hemos realizado el primer llenado*/
-  77   3                  else if (!bombaHidraulica && !controlTemperatura && primerLlenado) {
-  78   4                      TR0                    = 0;
-  79   4                      LED_T                  = 0;
-  80   4                      contadorTemperatura    = 0;
-  81   4                      resistenciaCalentadora = 0;
-  82   4                      TL0                    = TL_0;
-  83   4                      TH0                    = TH_0;
+  80   3                  if ((bombaHidraulica)) {
+  81   4                      LED_T                  = 0;
+  82   4                      contadorTemperatura    = 0;
+  83   4                      resistenciaCalentadora = 0;
   84   4                  }
-  85   3      
-  86   3                  // Si detectamos que es el primer llenado o el S1 se desactiva ponemos el proceso en marcha
-  87   3                  if ((primerLlenado == 0) || (S1 == 0)) {
-  88   4                      // Encendemos el TR0, la bomba y la valvula cerrada
-  89   4                      TR0             = 1;
-  90   4                      bombaHidraulica = 1;
-  91   4                      valvulaVaciado  = 0;
-  92   4                      /*Activamos el primer llenado. Esto no cambia hasta que marcha para
-  93   4                      y vuelva al reposo. nunca habra un primer llenado mas en el ciclo, si no se pasa por el bl
+  85   3                  /* Si esta la bomba apagada y el control de temperatura apagado, reinicia el control de temper
+             -atura y para el TR0,
+  86   3                  solo entra si hemos realizado el primer llenado*/
+  87   3                  else if (!bombaHidraulica && !controlTemperatura && primerLlenado) {
+  88   4                      TR0                    = 0;
+  89   4                      LED_T                  = 0;
+  90   4                      contadorTemperatura    = 0;
+  91   4                      resistenciaCalentadora = 0;
+  92   4                      TL0                    = TL_0;
+  93   4                      TH0                    = TH_0;
+  94   4                  }
+  95   3      
+  96   3                  // Si detectamos que es el primer llenado o el S1 se desactiva ponemos el proceso en marcha
+  97   3                  if ((primerLlenado == 0) || (S1 == 0)) {
+  98   4                      // Encendemos el TR0, la bomba y la valvula cerrada
+  99   4                      TR0             = 1;
+ 100   4                      bombaHidraulica = 1;
+ 101   4                      valvulaVaciado  = 0;
+ 102   4                      /*Activamos el primer llenado. Esto no cambia hasta que marcha para
+ 103   4                      y vuelva al reposo. nunca habra un primer llenado mas en el ciclo, si no se pasa por el bl
              -oque de paro*/
-  94   4                      if (!primerLlenado) { primerLlenado = 1; }
-  95   4                  }
-  96   3      
-  97   3                  /* Comprobamos el contador ha llegado a 10 seg o si S2 se activa, para parar
-  98   3                      el cliclo y dejarlo preparado para comenzar de nuevo*/
-  99   3                  if (((contadorLlenado == (10 * DESB_x_SEG)) || (S2 == 1)) && bombaHidraulica) {
- 100   4                      valvulaVaciado  = 1;
- 101   4                      bombaHidraulica = 0;
- 102   4                      // Paramos el TR0 y lo recargamos,a la espera de empezar un nuevo ciclo
- 103   4                      TR0             = 0;
- 104   4                      TL0             = TL_0;
- 105   4                      TH0             = TH_0;
- 106   4                      contadorLlenado = 0;
- 107   4                  }
- 108   3      
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/21/2023 14:10:01 PAGE 3   
+ 104   4                      if (!primerLlenado) { primerLlenado = 1; }
+ 105   4                  }
+ 106   3      
+ 107   3                  /* Comprobamos el contador ha llegado a 10 seg o si S2 se activa, para parar
+ 108   3                      el cliclo y dejarlo preparado para comenzar de nuevo*/
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/22/2023 09:09:09 PAGE 3   
 
- 109   3                  /*### CONTROL DE TEMPERATURA ###*/
- 110   3      
- 111   3                  // Si el control de temperatura esta On y no estamos en proceso de llenado ejecutamos el contr
+ 109   3                  if (((contadorLlenado == (10 * DESB_x_SEG)) || (S2 == 1)) && bombaHidraulica) {
+ 110   4                      valvulaVaciado  = 1;
+ 111   4                      bombaHidraulica = 0;
+ 112   4                      // Paramos el TR0 y lo recargamos,a la espera de empezar un nuevo ciclo
+ 113   4                      TR0             = 0;
+ 114   4                      TL0             = TL_0;
+ 115   4                      TH0             = TH_0;
+ 116   4                      contadorLlenado = 0;
+ 117   4                  }
+ 118   3      
+ 119   3                  /*### CONTROL DE TEMPERATURA ###*/
+ 120   3      
+ 121   3                  // Si el control de temperatura esta On y no estamos en proceso de llenado ejecutamos el contr
              -ol de temperatura
- 112   3                  if ((controlTemperatura == 1) && (!bombaHidraulica)) {
- 113   4      
- 114   4                      // Encendemos el led y TR0
- 115   4                      LED_T = 1;
- 116   4                      TR0   = 1;
- 117   4      
- 118   4                      // Si han pasado diez segundos ejecuta la lectura de la temperatura
- 119   4                      if (contadorTemperatura == (10 * DESB_x_SEG)) {
- 120   5      
- 121   5                          // Reset al contador
- 122   5                          contadorTemperatura = 0;
- 123   5      
- 124   5                          // Lectura de temperatura
- 125   5                          codigoTemperatura = conversionAD(CANAL_LECTURA_TEMPERATURA);
- 126   5                          // calculamos la temperatura
- 127   5                          temperatura = (130.0 / 1023) * codigoTemperatura - 30.0;
- 128   5                          // Si la temperatura es <= que 30 se enciende la resistancia
- 129   5                          if (temperatura <= 30) {
- 130   6                              resistenciaCalentadora = 1;
- 131   6                          }
- 132   5                          // Si la temperatura es > que 30 se apaga la resistancia
- 133   5                          if (temperatura > 30) {
- 134   6                              resistenciaCalentadora = 0;
- 135   6                          }
- 136   5                      }
- 137   4                  }
- 138   3              }
- 139   2          }
- 140   1      }
- 141          
- 142          /*##################### FUNCIONES #####################*/
- 143          // Definiciones
- 144          
- 145          // INICIALIZAR
- 146          void inicializar(void)
- 147          {
- 148   1          // variables locales
- 149   1          unsigned int vi;
- 150   1          // configuramos tmod timer 0 16 bits
- 151   1          TMOD = 0x01;
- 152   1          // Calculamos el valor inicial de del TR0
- 153   1          vi = (0xFFFF + 1) - BASE_DE_TIEMPO * FREQ_OSC / 12.0;
- 154   1          // Guardamos los valores iniciales en las variables
- 155   1          TL_0 = vi;
- 156   1          TH_0 = vi >> 8;
- 157   1          // Cargamos lo valores de TR0
- 158   1          TL0 = TL_0;
- 159   1          TH0 = TH_0;
- 160   1          // Habilitamos las interrupciones
- 161   1          EA  = 1; // Globales
- 162   1          ET0 = 1; // timer 0
- 163   1          EX0 = 1; // externa 0 pin3.2
- 164   1          IT0 = 0; // externa por nivel
- 165   1          // desactivamos los LEDs
- 166   1          LED_T = 0;
- 167   1          LED_M = 0;
- 168   1          // Cerramos la valvula y apagamos la bombaHidraulica
- 169   1          valvulaVaciado  = 0;
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/21/2023 14:10:01 PAGE 4   
+ 122   3                  if ((controlTemperatura == 1) && (!bombaHidraulica)) {
+ 123   4      
+ 124   4                      // Encendemos el led y TR0
+ 125   4                      LED_T = 1;
+ 126   4                      TR0   = 1;
+ 127   4      
+ 128   4                      // Si han pasado diez segundos ejecuta la lectura de la temperatura
+ 129   4                      if (contadorTemperatura == (10 * DESB_x_SEG)) {
+ 130   5      
+ 131   5                          // Reset al contador
+ 132   5                          contadorTemperatura = 0;
+ 133   5      
+ 134   5                          // Lectura de temperatura
+ 135   5                          codigoTemperatura = conversionAD(CANAL_LECTURA_TEMPERATURA);
+ 136   5                          // calculamos la temperatura
+ 137   5                          temperatura = (130.0 / 1023) * codigoTemperatura - 30.0;
+ 138   5                          // Si la temperatura es <= que 30 se enciende la resistancia
+ 139   5                          if (temperatura <= 30) {
+ 140   6                              resistenciaCalentadora = 1;
+ 141   6                          }
+ 142   5                          // Si la temperatura es > que 30 se apaga la resistancia
+ 143   5                          if (temperatura > 30) {
+ 144   6                              resistenciaCalentadora = 0;
+ 145   6                          }
+ 146   5                      }
+ 147   4                  }
+ 148   3              }
+ 149   2          }
+ 150   1      }
+ 151          
+ 152          /*##################### FUNCIONES #####################*/
+ 153          // Definiciones
+ 154          
+ 155          // INICIALIZAR
+ 156          void inicializar(void)
+ 157          {
+ 158   1          // variables locales
+ 159   1          unsigned int vi;
+ 160   1          // configuramos tmod timer 0 16 bits
+ 161   1          TMOD = 0x01;
+ 162   1          // Calculamos el valor inicial de del TR0
+ 163   1          vi = (0xFFFF + 1) - BASE_DE_TIEMPO * FREQ_OSC / 12.0;
+ 164   1          // Guardamos los valores iniciales en las variables
+ 165   1          TL_0 = vi;
+ 166   1          TH_0 = vi >> 8;
+ 167   1          // Cargamos lo valores de TR0
+ 168   1          TL0 = TL_0;
+ 169   1          TH0 = TH_0;
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/22/2023 09:09:09 PAGE 4   
 
- 170   1          bombaHidraulica = 0;
- 171   1          // Ponemos a cero la variable de primer llenado
- 172   1          primerLlenado = 0;
- 173   1          // Ponemos a cero el control de entrad a mantenimiento
- 174   1          mantenimientoOut = 0;
- 175   1      }
- 176          /*##########################################################################*/
- 177          
- 178          // INTERRUPCION TIMER 0
- 179          void interrupcionTR0(void) interrupt 1 using 2
- 180          {
- 181   1      
- 182   1          // Recargamos el TR0 al entrar en la interrupcion
- 183   1          TL0 = TL_0;
- 184   1          TH0 = TH_0;
- 185   1      
- 186   1          // Si estamos llenando el tanque sumamos al contador de llenado
- 187   1          if (bombaHidraulica)
- 188   1              contadorLlenado = contadorLlenado + 1; // contador++;
- 189   1      
- 190   1          // Si tenemos el control de temperatura on y no estamos llenando sumamos al contador de temperatura
- 191   1          if ((controlTemperatura == 1) && (!bombaHidraulica)) {
- 192   2              contadorTemperatura++;
- 193   2          }
- 194   1      }
- 195          /*##########################################################################*/
- 196          
- 197          // CONVERSION ANALOGICO DIGITAL
- 198          unsigned int conversionAD(unsigned char canal)
- 199          {
- 200   1      
- 201   1          ADCON = ADCON & 0x00;  // Borramos ADCON
- 202   1          ADCON = ADCON | canal; // Cargamos el canal
- 203   1      
- 204   1          ADCON = ADCON | 0x08; // Ininciamos la conversion
- 205   1      
- 206   1          while ((ADCON & 0x10) == 0) // Esperamos a que este completa la conversion
- 207   1              ;
- 208   1      
- 209   1          ADCON = ADCON & 0xEF; // poneoms a 0 ADCI
+ 170   1          // Habilitamos las interrupciones
+ 171   1          EA  = 1; // Globales
+ 172   1          ET0 = 1; // timer 0
+ 173   1          EX0 = 1; // externa 0 pin3.2
+ 174   1          IT0 = 0; // externa por nivel
+ 175   1          // desactivamos los LEDs
+ 176   1          LED_T = 0;
+ 177   1          LED_M = 0;
+ 178   1          // Cerramos la valvula y apagamos la bombaHidraulica
+ 179   1          valvulaVaciado  = 0;
+ 180   1          bombaHidraulica = 0;
+ 181   1          // Ponemos a cero la variable de primer llenado
+ 182   1          primerLlenado = 0;
+ 183   1          // Ponemos a cero el control de entrad a mantenimiento
+ 184   1          mantenimientoOut = 0;
+ 185   1      }
+ 186          /*##########################################################################*/
+ 187          
+ 188          // INTERRUPCION TIMER 0
+ 189          void interrupcionTR0(void) interrupt 1 using 2
+ 190          {
+ 191   1      
+ 192   1          // Recargamos el TR0 al entrar en la interrupcion
+ 193   1          TL0 = TL_0;
+ 194   1          TH0 = TH_0;
+ 195   1      
+ 196   1          // Si estamos llenando el tanque sumamos al contador de llenado
+ 197   1          if (bombaHidraulica)
+ 198   1              contadorLlenado = contadorLlenado + 1; // contador++;
+ 199   1      
+ 200   1          // Si tenemos el control de temperatura on y no estamos llenando sumamos al contador de temperatura
+ 201   1          if ((controlTemperatura == 1) && (!bombaHidraulica)) {
+ 202   2              contadorTemperatura++;
+ 203   2          }
+ 204   1      }
+ 205          /*##########################################################################*/
+ 206          
+ 207          // CONVERSION ANALOGICO DIGITAL
+ 208          unsigned int conversionAD(unsigned char canal)
+ 209          {
  210   1      
- 211   1          return (ADCON >> 6 | ADCH << 2); // devolvemos el valor
- 212   1      }
- 213          /*##########################################################################*/
- 214          
- 215          // INTERRUPCION EXTERNA P3.2
- 216          void interrupcionMantenimiento(void) interrupt 0 using 3
- 217          {
+ 211   1          ADCON = ADCON & 0x00;  // Borramos ADCON
+ 212   1          ADCON = ADCON | canal; // Cargamos el canal
+ 213   1      
+ 214   1          ADCON = ADCON | 0x08; // Ininciamos la conversion
+ 215   1      
+ 216   1          while ((ADCON & 0x10) == 0) // Esperamos a que este completa la conversion
+ 217   1              ;
  218   1      
- 219   1          // Apagamos todas las salidas
- 220   1          bombaHidraulica        = 0;    // apagada
- 221   1          valvulaVaciado         = 0;    // Cerrada
- 222   1          LED_M                  = 0;    // off
- 223   1          LED_T                  = 0;    // off
- 224   1          resistenciaCalentadora = 0;    // off
- 225   1          TR0                    = 0;    // off
- 226   1          contadorLlenado        = 0;    // reset
- 227   1          contadorTemperatura    = 0;    // reset
- 228   1          TL0                    = TL_0; // valor inicial
- 229   1          TH0                    = TH_0; // valor inicial
- 230   1      
- 231   1          // Activamos el bit que registra la entrada al modo mantenimiento
-C51 COMPILER V9.60.0.0   EXAMEN                                                            05/21/2023 14:10:01 PAGE 5   
+ 219   1          ADCON = ADCON & 0xEF; // poneoms a 0 ADCI
+ 220   1      
+ 221   1          return (ADCON >> 6 | ADCH << 2); // devolvemos el valor
+ 222   1      }
+ 223          /*##########################################################################*/
+ 224          
+ 225          // INTERRUPCION EXTERNA P3.2
+ 226          void interrupcionMantenimiento(void) interrupt 0 using 3
+ 227          {
+ 228   1      
+ 229   1          // Apagamos todas las salidas
+ 230   1          bombaHidraulica        = 0;    // apagada
+ 231   1          valvulaVaciado         = 0;    // Cerrada
+C51 COMPILER V9.60.0.0   EXAMEN                                                            05/22/2023 09:09:09 PAGE 5   
 
- 232   1          mantenimientoOut = 1;
- 233   1          // Espera a que mantnimiento este a nivel alto para salir de la interrupcion
- 234   1          while (!mantenimiento)
- 235   1              ;
- 236   1      }
- 237          /*##########################################################################*/
+ 232   1          LED_M                  = 0;    // off
+ 233   1          LED_T                  = 0;    // off
+ 234   1          resistenciaCalentadora = 0;    // off
+ 235   1          TR0                    = 0;    // off
+ 236   1          contadorLlenado        = 0;    // reset
+ 237   1          contadorTemperatura    = 0;    // reset
+ 238   1          TL0                    = TL_0; // valor inicial
+ 239   1          TH0                    = TH_0; // valor inicial
+ 240   1      
+ 241   1          // Activamos el bit que registra la entrada al modo mantenimiento
+ 242   1          mantenimientoOut = 1;
+ 243   1          // Espera a que mantnimiento este a nivel alto para salir de la interrupcion
+ 244   1          while (!mantenimiento)
+ 245   1              ;
+ 246   1      }
+ 247          /*##########################################################################*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

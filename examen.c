@@ -172,6 +172,8 @@ void inicializar(void)
     ET0 = 1; // timer 0
     EX0 = 1; // externa 0 pin3.2
     IT0 = 0; // externa por nivel
+    // IMPORTANTE LA PRIORIDAD A LA INTERRUPCION//
+    PX0 = 1; // PRIORIDAD ALTA
     // desactivamos los LEDs
     LED_T = 0;
     LED_M = 0;
